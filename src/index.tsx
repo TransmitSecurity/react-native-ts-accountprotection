@@ -17,6 +17,22 @@ const TsAccountprotection = NativeModules.TsAccountprotection
       }
     );
 
-export function multiply(a: number, b: number): Promise<number> {
-  return TsAccountprotection.multiply(a, b);
+export namespace TSAccountProtectionSDK {
+
+  // export interface TSRegistrationResult {
+  //   result: string;
+  // }
 }
+
+export interface TSAccountProtectionSDKModule {
+  initialize: (clientId: string, baseUrl: string) => Promise<boolean>;
+}
+
+class RNAccountProtectionSDK implements TSAccountProtectionSDKModule {
+
+  initialize(clientId: string, baseUrl: string): Promise<boolean> {
+    return TsAccountprotection.initialize(clientId, baseUrl);
+  }
+
+}
+export default new RNAccountProtectionSDK();

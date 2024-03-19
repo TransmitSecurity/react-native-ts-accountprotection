@@ -2,13 +2,19 @@
 
 @interface RCT_EXTERN_MODULE(TsAccountprotection, NSObject)
 
-RCT_EXTERN_METHOD(multiply:(float)a withB:(float)b
-                 withResolver:(RCTPromiseResolveBlock)resolve
-                 withRejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(initialize:(NSString*)clientId baseUrl:(NSString*)baseUrl withResolver:(RCTPromiseResolveBlock)resolve withRejecter:(RCTPromiseRejectBlock)reject)
+
+//RCT_EXTERN_METHOD(register:(NSString *)username displayName:(NSString*)displayName withResolver:(RCTPromiseResolveBlock)resolve
+//                  withRejecter:(RCTPromiseRejectBlock)reject)
+//RCT_EXTERN_METHOD(authenticate:(NSString *)username withResolver:(RCTPromiseResolveBlock)resolve
+//                  withRejecter:(RCTPromiseRejectBlock)reject)
+//RCT_EXTERN_METHOD(signTransaction:(NSString *)username withResolver:(RCTPromiseResolveBlock)resolve
+//                  withRejecter:(RCTPromiseRejectBlock)reject)
 
 + (BOOL)requiresMainQueueSetup
 {
-  return NO;
+  return YES;
 }
 
 @end

@@ -1,4 +1,6 @@
 PODS:
+  - AccountProtection (2.0.8):
+    - TSCoreSDK (~> 1.0.20)
   - boost (1.83.0)
   - CocoaAsyncSocket (7.6.5)
   - DoubleConversion (1.1.6)
@@ -945,6 +947,7 @@ PODS:
     - glog
     - React-debug
   - react-native-ts-accountprotection (0.1.0):
+    - AccountProtection (~> 2.0.8)
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
@@ -1116,6 +1119,7 @@ PODS:
     - React-logger (= 0.73.5)
     - React-perflogger (= 0.73.5)
   - SocketRocket (0.6.1)
+  - TSCoreSDK (1.0.20)
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -1196,6 +1200,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - AccountProtection
     - CocoaAsyncSocket
     - Flipper
     - Flipper-Boost-iOSX
@@ -1209,6 +1214,7 @@ SPEC REPOS:
     - libevent
     - OpenSSL-Universal
     - SocketRocket
+    - TSCoreSDK
 
 EXTERNAL SOURCES:
   boost:
@@ -1312,6 +1318,7 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
+  AccountProtection: 50a713f338ceec9333b44df80f25120b1476c7ab
   boost: d3f49c53809116a5d38da093a8aa78bf551aed09
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
   DoubleConversion: fea03f2699887d960129cc54bba7e52542b6f953
@@ -1351,7 +1358,7 @@ SPEC CHECKSUMS:
   React-jsinspector: 32db5e364bcae8fca8cdf8891830636275add0c5
   React-logger: 0331362115f0f5b392bd7ed14636d1a3ea612479
   React-Mapbuffer: 7c35cd53a22d0be04d3f26f7881c7fb7dd230216
-  react-native-ts-accountprotection: b5acfb292abb08186b9568b2115d37d6513bc53e
+  react-native-ts-accountprotection: ef2fa8bde05db60a33a7cc3443b045810ebdf399
   React-nativeconfig: 1166714a4f7ea57a0df5c2cb44fbc70f98d580f9
   React-NativeModulesApple: 726664e9829eb5eed8170241000e46ead269a05f
   React-perflogger: 0dd9f1725d55f8264b81efadd373fe1d9cca7dc2
@@ -1373,6 +1380,7 @@ SPEC CHECKSUMS:
   React-utils: 987a4526a2fc0acdfaf87888adfe0bf9d0452066
   ReactCommon: 2947b0bffd82ea0e58ca7928881152d4c6dae9af
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
+  TSCoreSDK: 5e3fef3980501412b2edea393c4132f1da08a353
   Yoga: a716eea57d0d3430219c0a5a233e1e93ee931eb7
 
 PODFILE CHECKSUM: 1447f917ade423bbfebc1fa4bdb3a16dbb406f4c

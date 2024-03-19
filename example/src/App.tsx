@@ -2,11 +2,18 @@ import * as React from 'react';
 
 import { SafeAreaView, Keyboard } from 'react-native';
 
-// import { multiply } from 'react-native-ts-accountprotection';
+import TSAccountProtectionSDKModule from 'react-native-ts-accountprotection';
+
 import Login from './screens/login';
 import { AuthenticatedUser } from './screens/authenticated-user';
 import LoadingScreen from './screens/loading';
 import config from './config';
+
+export type ExampleAppConfiguration = {
+  clientId: string;
+  baseUrl: string;
+  secret: string;
+}
 
 export type MoneyTransferDTO = {
   payerName: string;
@@ -65,9 +72,31 @@ export default class App extends React.Component<Props, State> {
   // App Configuration
 
   private onAppReady = async (): Promise<void> => {
-
+    if (this.isAppConfigured()) {
+      const appConfiguration: ExampleAppConfiguration = {
+        clientId: config.clientId,
+        baseUrl: `${config.baseUrl}`,
+        secret: config.secret
+      }
+      this.configureExampleApp(appConfiguration);
+    } else {
+      this.setState({ errorMessage: "Please configure the app with your secret, client ID and domain" });
+    }
   }
 
+  private configureExampleApp = async (appConfiguration: ExampleAppConfiguration): Promise<void> => {
+    // this.mockServer = new MockServer(
+    //   appConfiguration.baseUrl,
+    //   appConfiguration.clientId,
+    //   appConfiguration.secret
+    // );
+
+    TSAccountProtectionSDKModule.initialize(appConfiguration.clientId, appConfiguration.baseUrl);
+  }
+
+  private isAppConfigured = (): boolean => {
+    return !(config.clientId === "REPLACE_WITH_CLIENT_ID" || config.domain === "REPLACE_WITH_DOMAIN");
+  }
   // Authentication
 
   private handleLogin = (username: string, password: string) => {

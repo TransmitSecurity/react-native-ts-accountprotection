@@ -104,6 +104,9 @@ export default class App extends React.Component<Props, State> {
     this.setState({ isLoading: true });
 
     setTimeout(() => {
+
+      TSAccountProtectionSDKModule.setUserId(username);
+
       this.setState({ 
         isLoading: false, 
         currentScreen: AppScreen.AuthenticatedUser

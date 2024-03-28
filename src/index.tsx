@@ -19,13 +19,39 @@ const TsAccountprotection = NativeModules.TsAccountprotection
 
 export namespace TSAccountProtectionSDK {
 
-  // export interface TSRegistrationResult {
-  //   result: string;
-  // }
+  export interface TSPayer {
+    name?: string;
+    branchIdentifier?: string;
+    accountNumber?: string;
+  }
+
+  export interface TSPayee {
+    name?: string;
+    bankIdentifier?: string;
+    branchIdentifier?: string;
+    accountNumber?: string;
+  }
+
+  export interface TSTransactionData {
+    amount: number;
+    currency: string;
+    reason?: string;
+    transactionDate?: number;
+    payer?: TSPayer;
+    payee?: TSPayee;
+  }
+  
+  export interface TSActionEventOptions {
+    correlationId?: string;
+    claimUserId?: string;
+    referenceUserId?: string;
+    transactionData?: TSTransactionData;
+  }
 }
 
 export interface TSAccountProtectionSDKModule {
   initialize: (clientId: string, baseUrl: string) => Promise<boolean>;
+  setUserId: (userId: string) => Promise<boolean>;
 }
 
 class RNAccountProtectionSDK implements TSAccountProtectionSDKModule {
@@ -34,5 +60,8 @@ class RNAccountProtectionSDK implements TSAccountProtectionSDKModule {
     return TsAccountprotection.initialize(clientId, baseUrl);
   }
 
+  setUserId(userId: string): Promise<boolean> {
+    return TsAccountprotection.setUserId(userId);
+  }
 }
 export default new RNAccountProtectionSDK();

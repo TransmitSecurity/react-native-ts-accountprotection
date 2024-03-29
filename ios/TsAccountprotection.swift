@@ -5,19 +5,11 @@ class TsAccountprotection: NSObject {
     
     private let kTag = "TSAccountprotection"
     
-    @objc(initialize:baseUrl:withResolver:withRejecter:)
+    @objc(initialize:withRejecter:)
     func initialize(
-        _ clientId: String,
-        baseUrl: String,
-        resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
-            
-            guard !clientId.isEmpty, !baseUrl.isEmpty else {
-                reject("Invalid params provided to .initialize", nil, nil)
-                return
-            }
-            
+        _ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
             runBlockOnMain {
-                TSAccountProtection.initialize(baseUrl: baseUrl, clientId: clientId)
+                try? TSAccountProtection.initializeSDK()
                 resolve(true)
             }
         }
@@ -36,7 +28,7 @@ class TsAccountprotection: NSObject {
     }
     
     @objc(triggerAction:options:withResolver:withRejecter:)
-    func triggerAction(action: String, options: NSDictionary?, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+    func triggerAction(action: String, options: [String: Any]? = nil, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         
         runBlockOnMain { [weak self] in
             
@@ -54,19 +46,21 @@ class TsAccountprotection: NSObject {
                     switch results {
                     case .success(let response):
                         let actionToken: String = response.actionToken
-                        resolve(["results": "success", "actionToken": actionToken])
+                        resolve(["success": true, "actionToken": actionToken])
                     case .failure(let error):
                         switch error {
                         case .disabled:
-                            resolve(["results": "error", "error": "disabled"])
+                            reject("disabled", nil, nil)
                         case .connectionError:
-                            resolve(["results": "error", "error": "connectionError"])
+                            reject("connectionError", nil, nil)
                         case .internalError:
-                            resolve(["results": "error", "error": "internalError"])
+                            reject("internalError", nil, nil)
                         case .notSupportedActionError:
-                            resolve(["results": "error", "error": "notSupportedActionError"])
+                            reject("notSupportedActionError", nil, nil)
+                        case .initializationError:
+                            reject("initializationError", nil, nil)
                         @unknown default:
-                            resolve(["results": "error", "error": "@unknown"])
+                            reject("unknown", nil, nil)
                         }
                     }
                 }
@@ -74,9 +68,18 @@ class TsAccountprotection: NSObject {
         }
     }
     
+    @objc(clearUser:withRejecter:)
+    func clearUser(
+        _ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
+            runBlockOnMain {
+                TSAccountProtection.clearUser()
+                resolve(true)
+            }
+        }
+    
     // MARK: - Helpers
     
-    private func convertTransactionOptions(_ options: NSDictionary) -> AccountProtection.TSActionEventOptions? {
+    private func convertTransactionOptions(_ options: [String: Any]) -> AccountProtection.TSActionEventOptions? {
         guard doMandatoryOptionsExist(options) else { return nil }
         
         let correlationId = options["correlationId"] as? String
@@ -94,7 +97,7 @@ class TsAccountprotection: NSObject {
         return options
     }
     
-    private func doMandatoryOptionsExist(_ options: NSDictionary) -> Bool {
+    private func doMandatoryOptionsExist(_ options: [String: Any]) -> Bool {
         guard let data = options["transactionData"] as? [String: Any] else {
             return true // the entire object is really optional
         }
@@ -105,7 +108,7 @@ class TsAccountprotection: NSObject {
         return amount != nil && currency != nil // the only two mandatory items
     }
     
-    private func convertTransactionDataFromOptions(_ options: NSDictionary) -> TSTransactionData? {
+    private func convertTransactionDataFromOptions(_ options: [String: Any]) -> TSTransactionData? {
         guard let data = options["transactionData"] as? [String: Any] else {
             return nil
         }

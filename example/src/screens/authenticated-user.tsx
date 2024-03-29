@@ -4,6 +4,7 @@ import type { MoneyTransferDTO } from '../App';
 
 interface AuthenticatedUserProps {
     onSubmitMoneyTransferRequest: (requestDTO: MoneyTransferDTO) => void;
+    onLogout: () => void;
 
     userId: string;
 }
@@ -33,6 +34,7 @@ export class AuthenticatedUser extends React.Component<AuthenticatedUserProps, A
                 {this.renderHeading()}
                 {this.renderInputFields()}
                 {this.renderSubmitButton()}
+                {this.renderLogoutButton()}
             </View>
         );
     }
@@ -43,6 +45,17 @@ export class AuthenticatedUser extends React.Component<AuthenticatedUserProps, A
                 <Button
                     title="Submit"
                     onPress={() => this.hadnleSubmit()}
+                />
+            </View>
+        )
+    }
+
+    private renderLogoutButton(): ReactElement {
+        return (
+            <View style={{ marginTop: 24 }}>
+                <Button
+                    title="Logout"
+                    onPress={() => this.props.onLogout()}
                 />
             </View>
         )

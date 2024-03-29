@@ -47,21 +47,50 @@ export namespace TSAccountProtectionSDK {
     referenceUserId?: string;
     transactionData?: TSTransactionData;
   }
+
+  export interface TSSetActionResponse {
+    success: boolean;
+    actionToken: string;
+    error: string;
+  }
+
+  export const enum TSAction {
+    login = 'login',
+    register = 'register',
+    transaction = 'transaction',
+    checkout = 'checkout',
+    password_reset = 'password_reset',
+    logout = 'logout',
+    account_details_change = 'account_details_change',
+    account_auth_change = 'account_auth_change',
+    withdraw = 'withdraw',
+    credits_change = 'credits_change',
+  }
 }
 
 export interface TSAccountProtectionSDKModule {
-  initialize: (clientId: string, baseUrl: string) => Promise<boolean>;
+  initialize: () => Promise<boolean>;
   setUserId: (userId: string) => Promise<boolean>;
+  triggerAction: (action: string, options?: TSAccountProtectionSDK.TSActionEventOptions) => Promise<TSAccountProtectionSDK.TSSetActionResponse>;
+  clearUser: () => Promise<boolean>;
 }
 
 class RNAccountProtectionSDK implements TSAccountProtectionSDKModule {
 
-  initialize(clientId: string, baseUrl: string): Promise<boolean> {
-    return TsAccountprotection.initialize(clientId, baseUrl);
+  initialize(): Promise<boolean> {
+    return TsAccountprotection.initialize();
   }
 
   setUserId(userId: string): Promise<boolean> {
     return TsAccountprotection.setUserId(userId);
+  }
+
+  triggerAction(action: string, options?: TSAccountProtectionSDK.TSActionEventOptions): Promise<TSAccountProtectionSDK.TSSetActionResponse> {
+    return TsAccountprotection.triggerAction(action, options);
+  }
+
+  clearUser(): Promise<boolean> {
+    return TsAccountprotection.clearUser();
   }
 }
 export default new RNAccountProtectionSDK();

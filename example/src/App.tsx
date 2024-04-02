@@ -70,7 +70,7 @@ export default class App extends React.Component<Props, State> {
   // App Configuration
 
   private onAppReady = async (): Promise<void> => {
-    await TSAccountProtectionSDKModule.initialize();
+    await TSAccountProtectionSDKModule.initialize(config.clientId);
   }
 
   // Authentication

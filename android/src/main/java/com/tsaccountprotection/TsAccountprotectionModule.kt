@@ -5,6 +5,7 @@ import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
+import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.WritableMap
 import com.facebook.react.bridge.WritableNativeMap
 import com.transmit.accountprotection.ITransmitSecurityTriggerActionEventCallback
@@ -55,7 +56,7 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
   }
 
   @ReactMethod
-  fun triggerAction(action: String, options: Map<String, Any>, promise: Promise) {
+  fun triggerAction(action: String, options: ReadableMap, promise: Promise) {
     if(reactContext.currentActivity != null) {
       Log.d("TS", ">>> triggerAction $action")
 
@@ -108,54 +109,46 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
 
   // endregion
 
-  private fun convertOptions(options: Map<String, Any>): ActionEventOptions {
+  private fun convertOptions(options: ReadableMap): ActionEventOptions {
     return ActionOptions(
-      if(options.contains("correlationId")) options["correlationId"] as String else null,
-      if(options.contains("claimUserId")) options["claimUserId"] as String else null,
-      if(options.contains("referenceUserId")) options["referenceUserId"] as String else null
+      if(options.hasKey("correlationId")) options.getString("correlationId") as String else null,
+      if(options.hasKey("claimUserId")) options.getString("claimUserId") as String else null,
+      if(options.hasKey("referenceUserId")) options.getString("referenceUserId") as String else null
     )
   }
 
-  private fun convertTransactionData(options: Map<String, Any>): TransactionData {
+  private fun convertTransactionData(options: ReadableMap): TransactionData {
     val transactionData =
-      if(options.contains("transactionData")) options["transactionData"] as Map<String, Any> else null
+      if(options.hasKey("transactionData")) options.getMap("transactionData") else null
 
     var payee = PayeeData(null, null, null, null)
-    if(transactionData?.contains("payee") == true) {
-      val data = transactionData["payee"] as Map<String, Any>
+    if(transactionData?.hasKey("payee") == true) {
+      val data = transactionData.getMap("payee")
       payee = PayeeData(
-        if(data.contains("name")) data["name"] as String else null,
-        if(data.contains("bankIdentifier")) data["bankIdentifier"] as String else null,
-        if(data.contains("branchIdentifier")) data["branchIdentifier"] as String else null,
-        if(data.contains("accountNumber")) data["accountNumber"] as String else null)
+        if(data!!.hasKey("name")) data.getString("name") else null,
+        if(data.hasKey("bankIdentifier")) data.getString("bankIdentifier") else null,
+        if(data.hasKey("branchIdentifier")) data.getString("branchIdentifier") else null,
+        if(data.hasKey("accountNumber")) data.getString("accountNumber") else null)
       }
 
     var payer = PayerData(null, null, null)
-    if(transactionData?.contains("payer") == true) {
-      val data = transactionData["payer"] as Map<String, Any>
+    if(transactionData?.hasKey("payer") == true) {
+      val data = transactionData.getMap("payer")
       payer = PayerData(
-        if(data.contains("name")) data["name"] as String else null,
-        if(data.contains("bankIdentifier")) data["bankIdentifier"] as String else null,
-        if(data.contains("accountNumber")) data["accountNumber"] as String else null)
+        if(data!!.hasKey("name")) data.getString("name") else null,
+        if(data.hasKey("bankIdentifier")) data.getString("bankIdentifier") else null,
+        if(data.hasKey("accountNumber")) data.getString("accountNumber") else null)
     }
 
     return ActionTransactionData(
-      if(transactionData?.contains("amount") == true) transactionData["amount"] as Double else null,
-      if(transactionData?.contains("currency") == true) transactionData["currency"] as String else null,
-      if(transactionData?.contains("reason") == true) transactionData["reason"] as String else null,
-      if(transactionData?.contains("transactionDate") == true) transactionData["transactionDate"] as Long else null,
+      if(transactionData?.hasKey("amount") == true) transactionData.getDouble("amount") else null,
+      if(transactionData?.hasKey("currency") == true) transactionData.getString("currency") else null,
+      if(transactionData?.hasKey("reason") == true) transactionData.getString("reason") else null,
+      if(transactionData?.hasKey("transactionDate") == true) transactionData.getDouble("transactionDate").toLong() else null,
       payee,
       payer
     )
   }
-
-  // Example method
-  // See https://reactnative.dev/docs/native-modules-android
-  @ReactMethod
-  fun multiply(a: Double, b: Double, promise: Promise) {
-    promise.resolve(a * b)
-  }
-
 }
 
 class ActionOptions(

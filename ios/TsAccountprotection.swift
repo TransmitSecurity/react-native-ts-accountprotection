@@ -5,11 +5,11 @@ class TsAccountprotection: NSObject {
     
     private let kTag = "TSAccountprotection"
     
-    @objc(initialize:withRejecter:)
+    @objc(initialize:withResolver:withRejecter:)
     func initialize(
-        _ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
+        _ clientId: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
             runBlockOnMain {
-                try? TSAccountProtection.initializeSDK()
+                TSAccountProtection.initialize(clientId: clientId)
                 resolve(true)
             }
         }

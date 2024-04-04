@@ -112,7 +112,7 @@ export default class App extends React.Component<Props, State> {
 
     try {
       const triggerActionResponse = await TSAccountProtectionSDKModule.triggerAction(
-        `${TSAccountProtectionSDK.TSAction.login}`,
+        `${TSAccountProtectionSDK.TSAction.transaction}`,
         this.convertMoneyTransferDTOToEventOptions(requestDTO)
       );
 

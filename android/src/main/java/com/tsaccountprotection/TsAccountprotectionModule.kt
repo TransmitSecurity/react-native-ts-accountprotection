@@ -32,9 +32,17 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
   // region Account Protection SDK API
 
   @ReactMethod
+  fun initializeSDK() {
+    if(reactContext.currentActivity != null) {
+      Log.d("TS", ">>> initializeSDK")
+      TSAccountProtection.initializeSDK(reactContext)
+    }
+  }
+
+  @ReactMethod
   fun initialize(clientId: String) {
     if(reactContext.currentActivity != null) {
-      Log.d("TS", ">>> initialize clientId=$clientId")
+      Log.d("TS", ">>> initialize SDK clientId=$clientId")
       TSAccountProtection.initialize(reactContext, clientId)
     }
   }

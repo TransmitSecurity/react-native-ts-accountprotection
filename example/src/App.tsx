@@ -70,7 +70,7 @@ export default class App extends React.Component<Props, State> {
   // App Configuration
 
   private onAppReady = async (): Promise<void> => {
-    await TSAccountProtectionSDKModule.initialize(config.clientId);
+    await TSAccountProtectionSDKModule.initializeSDK();
   }
 
   // Authentication
@@ -112,7 +112,7 @@ export default class App extends React.Component<Props, State> {
 
     try {
       const triggerActionResponse = await TSAccountProtectionSDKModule.triggerAction(
-        `${TSAccountProtectionSDK.TSAction.login}`,
+        `${TSAccountProtectionSDK.TSAction.transaction}`,
         this.convertMoneyTransferDTOToEventOptions(requestDTO)
       );
 

@@ -1,0 +1,5 @@
+<resources>
+  <!-- Transmit Security Credentials -->
+  <string name="transmit_security_client_id">7wjwcilklpwlxelxzg7fj63hvo061gql</string>
+  <string name="transmit_security_base_url">https://api.idsec-stg.com/risk-collect/device/</string>
+</resources>

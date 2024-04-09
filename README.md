@@ -52,6 +52,8 @@ import TSAccountProtectionSDKModule, { TSAccountProtectionSDK } from 'react-nati
 
 componentDidMount(): void {
     // Setup the module as soon your component is ready
+    // There are two methods to init the SDK module, prefered one is initializeSDK
+    await TSAccountProtectionSDKModule.initializeSDK(); 
     await TSAccountProtectionSDKModule.initialize('REPLACE_WITH_CLIENT_ID');
 }
 ```

@@ -22,6 +22,10 @@ class MockServer {
             }).toString();
 
             const accessTokenResponse = await this.getAccessToken();
+            
+            console.log("Access token url: ", `${this.baseurl}/oidc/token`);
+            console.log("Access Token Response: ", accessTokenResponse)
+            console.log("Recomendation: ", `${this.baseurl}/risk/v1/recommendation?${query}`)
 
             const resp = await fetch(
                 `${this.baseurl}/risk/v1/recommendation?${query}`,
@@ -34,6 +38,7 @@ class MockServer {
             );
 
             const data = await resp.json();
+
             return data;
 
         } catch (error) {

@@ -116,17 +116,22 @@ export default class App extends React.Component<Props, State> {
         this.convertMoneyTransferDTOToEventOptions(requestDTO)
       );
 
-        const recommendationResponse = await this.mockServer.fetchRecommendation(triggerActionResponse.actionToken);        
-        console.log("Server returned recomendation for action:");
-        console.log(recommendationResponse);
-        
-        const recomendation = recommendationResponse.recommendation;
-        if (recomendation) {
-          const message = `Recommendation: ${recomendation.type} | Risk Score: ${recommendationResponse.risk_score}`;
-          Alert.alert("Recommendation Received", message);
-        }
 
-        this.setState({ errorMessage: "", isLoading: false });
+      Alert.alert(JSON.stringify(
+        `Success: ${triggerActionResponse.success}. Token (copied to clipboard): ${triggerActionResponse.actionToken}`
+      ));
+
+      const recommendationResponse = await this.mockServer.fetchRecommendation(triggerActionResponse.actionToken);
+      console.log("Server returned recomendation for action:");
+      console.log(recommendationResponse);
+
+      const recomendation = recommendationResponse.recommendation;
+      if (recomendation) {
+        const message = `Recommendation: ${recomendation.type} | Risk Score: ${recommendationResponse.risk_score}`;
+        Alert.alert("Recommendation Received", message);
+      }
+
+      this.setState({ errorMessage: "", isLoading: false });
 
     } catch (error) {
       this.setState({ errorMessage: `${error}`, isLoading: false });

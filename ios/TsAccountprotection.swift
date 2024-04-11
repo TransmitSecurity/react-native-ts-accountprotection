@@ -9,7 +9,7 @@ class TsAccountprotection: NSObject {
     func initialize(
         _ clientId: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
             runBlockOnMain {
-                TSAccountProtection.initialize(clientId: clientId)
+                TSAccountProtection.initialize(baseUrl: "https://api.idsec-stg.com", clientId: clientId)
                 resolve(true)
             }
         }
@@ -46,6 +46,9 @@ class TsAccountprotection: NSObject {
                     switch results {
                     case .success(let response):
                         let actionToken: String = response.actionToken
+                        let pasteboard = UIPasteboard.general
+                        pasteboard.string = actionToken
+                        
                         resolve(["success": true, "actionToken": actionToken])
                     case .failure(let error):
                         switch error {

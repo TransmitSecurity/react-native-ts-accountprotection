@@ -946,7 +946,7 @@ PODS:
   - React-Mapbuffer (0.73.5):
     - glog
     - React-debug
-  - react-native-ts-accountprotection (0.1.0):
+  - react-native-ts-accountprotection (0.1.1):
     - AccountProtection (~> 2.1.0)
     - glog
     - RCT-Folly (= 2022.05.16.00)
@@ -1358,7 +1358,7 @@ SPEC CHECKSUMS:
   React-jsinspector: 32db5e364bcae8fca8cdf8891830636275add0c5
   React-logger: 0331362115f0f5b392bd7ed14636d1a3ea612479
   React-Mapbuffer: 7c35cd53a22d0be04d3f26f7881c7fb7dd230216
-  react-native-ts-accountprotection: 4338eb8b785a384e1d3b4445e9c884435e131894
+  react-native-ts-accountprotection: 8c65f421921f7ecfa572991495f90ae50c6af4d3
   React-nativeconfig: 1166714a4f7ea57a0df5c2cb44fbc70f98d580f9
   React-NativeModulesApple: 726664e9829eb5eed8170241000e46ead269a05f
   React-perflogger: 0dd9f1725d55f8264b81efadd373fe1d9cca7dc2

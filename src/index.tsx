@@ -81,6 +81,10 @@ class RNAccountProtectionSDK implements TSAccountProtectionSDKModule {
     return TsAccountprotection.initialize(clientId);
   }
 
+  initializeSDK(): Promise<boolean> {
+    return TsAccountprotection.initializeSDK();
+  }
+
   setUserId(userId: string): Promise<boolean> {
     return TsAccountprotection.setUserId(userId);
   }

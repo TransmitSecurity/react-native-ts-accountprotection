@@ -47,13 +47,26 @@ repositories {
 ## Module Setup and API
 
 #### Initialize the SDK
+## There are two methods to init the SDK module, prefered one is initializeSDK
+
+## Option 1: initializeSDK()
+# Inthis options the client_id and base_url are predefined in the module plis/strings.xml and axcsible to the sdk
 ```js
 import TSAccountProtectionSDKModule, { TSAccountProtectionSDK } from 'react-native-ts-accountprotection';
 
 componentDidMount(): void {
     // Setup the module as soon your component is ready
-    // There are two methods to init the SDK module, prefered one is initializeSDK
     await TSAccountProtectionSDKModule.initializeSDK(); 
+}
+```
+
+## Option 1: initialize('REPLACE_WITH_CLIENT_ID')
+# In this option client_id is passed as a variable from the application level to the native module
+```js
+import TSAccountProtectionSDKModule, { TSAccountProtectionSDK } from 'react-native-ts-accountprotection';
+
+componentDidMount(): void {
+    // Setup the module as soon your component is ready
     await TSAccountProtectionSDKModule.initialize('REPLACE_WITH_CLIENT_ID');
 }
 ```

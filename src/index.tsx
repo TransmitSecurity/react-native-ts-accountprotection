@@ -83,7 +83,7 @@ class RNAccountProtectionSDK implements TSAccountProtectionSDKModule {
   }
 
   initializeIOS(clientId: string, baseUrl?: string | undefined): Promise<boolean> {
-    return TsAccountprotection.initialize(clientId, baseUrl ?? "");
+    return TsAccountprotection.initializeIOS(clientId, baseUrl ?? "");
   }
 
   setUserId(userId: string): Promise<boolean> {

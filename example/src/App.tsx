@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { SafeAreaView, Keyboard, Alert } from 'react-native';
+import { SafeAreaView, Keyboard, Alert, Platform } from 'react-native';
 
 import TSAccountProtectionSDKModule, { TSAccountProtectionSDK } from 'react-native-ts-accountprotection';
 import MockServer from './mock-server';
@@ -71,7 +71,9 @@ export default class App extends React.Component<Props, State> {
 
   private onAppReady = async (): Promise<void> => {
     // this is for iOS only, Android TSAccountProtectionSDK is initialized from application onCreate.
-   await TSAccountProtectionSDKModule.initialize(config.clientId);
+    if(Platform.OS === 'ios'){
+      await TSAccountProtectionSDKModule.initializeIOS(config.clientId);
+    }
   }
 
   // Authentication

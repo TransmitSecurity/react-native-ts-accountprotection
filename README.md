@@ -41,6 +41,10 @@ repositories {
     url('https://transmit.jfrog.io/artifactory/transmit-security-gradle-release-local/')
   }
 }
+
+dependencies {
+  implementation("com.ts.sdk:accountprotection:2.1.+")
+}
 ```
 
 
@@ -71,7 +75,7 @@ componentDidMount(): void {
 }
 ```
 
-## Option 1: initialize('REPLACE_WITH_CLIENT_ID')
+## Option 2: initialize('REPLACE_WITH_CLIENT_ID')
 # In this option client_id is passed as a variable from the application level to the native module
 ```js
 import TSAccountProtectionSDKModule, { TSAccountProtectionSDK } from 'react-native-ts-accountprotection';

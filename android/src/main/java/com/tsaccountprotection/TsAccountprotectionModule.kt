@@ -32,13 +32,13 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
   // region Account Protection SDK API
 
   @ReactMethod
-  fun initializeSDK() {
-    // Do nothing Android TSAccountProtectionSDK is initialized from application onCreate
+  fun initializeSDKIOS() {
+    Log.d("TS", "Do nothing Android TSAccountProtectionSDK is initialized from application onCreate")
   }
 
   @ReactMethod
-  fun initialize(clientId: String) {
-    // Do nothing Android TSAccountProtectionSDK is initialized from application onCreate
+  fun initializeIOS(clientId: String) {
+    Log.d("TS", "Do nothing Android TSAccountProtectionSDK is initialized from application onCreate")
   }
 
   @ReactMethod

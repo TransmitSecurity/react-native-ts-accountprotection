@@ -69,7 +69,8 @@ export namespace TSAccountProtectionSDK {
 }
 
 export interface TSAccountProtectionSDKModule {
-  initialize: (clientId: string) => Promise<boolean>;
+  initializeIOS: (clientId: string) => Promise<boolean>; 
+  initializeSDKIOS: () => Promise<boolean>;
   setUserId: (userId: string) => Promise<boolean>;
   triggerAction: (action: string, options?: TSAccountProtectionSDK.TSActionEventOptions) => Promise<TSAccountProtectionSDK.TSSetActionResponse>;
   clearUser: () => Promise<boolean>;
@@ -77,11 +78,11 @@ export interface TSAccountProtectionSDKModule {
 
 class RNAccountProtectionSDK implements TSAccountProtectionSDKModule {
 
-  initialize(clientId: string): Promise<boolean> {
+  initializeIOS(clientId: string): Promise<boolean> {
     return TsAccountprotection.initialize(clientId);
   }
 
-  initializeSDK(): Promise<boolean> {
+  initializeSDKIOS(): Promise<boolean> {
     return TsAccountprotection.initializeSDK();
   }
 

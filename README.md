@@ -1,5 +1,5 @@
 # React Native - Transmit Security Account Protection SDK
-#### Detect risk in customer interactions on digital channels, and enable informed identity and trust decisions across the consumer experience. 
+#### Detect risk in customer interactions on digital channels, and enable informed identity and trust decisions across the consumer experience.
 
 ## About Account Protection SDK
 The React Native Detection and Response SDK Wrapper is a versatile tool designed to seamlessly integrate the powerful capabilities of the Detection and Response services into your React Native applications. By encapsulating the APIs of the native SDKs for both iOS and Android platforms, this wrapper empowers enterprises to confidently enhance security measures while maintaining a smooth user experience.
@@ -19,7 +19,7 @@ To integrate this module, you'll need to configure an application in our [portal
 3. Run the example app on a real device using Xcode or Android Studio. Alternatively, execute `yarn example ios` or `yarn example android`.
 <br><br>
 > **Important Security Note: Never store your `secret` in a front-end application.**
-> 
+>
 > The example app utilizes a mock server to manage communication with the authentication platform. This mock server employs the `secret` you have specified in `example/src/config.ts` exclusively for demonstration purposes. It is paramount that you safeguard your `secret` in a secure and confidential location.
 
 ## Installation
@@ -47,7 +47,18 @@ repositories {
 ## Module Setup and API
 
 #### Initialize the SDK
-## There are two methods to init the SDK module, prefered one is initializeSDK
+### There are two methods to init the SDK module, iOS can use both, Android needs to call initializeSDK on Application.onCreate()
+
+### Android
+```kt
+override fun onCreate() {
+    super.onCreate()
+    TSAccountProtection.initializeSDK(this.applicationContext)
+    ...
+  }
+```
+
+### iOS
 
 ## Option 1: initializeSDK()
 # Inthis options the client_id and base_url are predefined in the module plis/strings.xml and axcsible to the sdk
@@ -56,7 +67,7 @@ import TSAccountProtectionSDKModule, { TSAccountProtectionSDK } from 'react-nati
 
 componentDidMount(): void {
     // Setup the module as soon your component is ready
-    await TSAccountProtectionSDKModule.initializeSDK(); 
+    await TSAccountProtectionSDKModule.initializeSDK();
 }
 ```
 

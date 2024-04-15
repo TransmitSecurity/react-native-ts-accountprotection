@@ -70,7 +70,8 @@ export default class App extends React.Component<Props, State> {
   // App Configuration
 
   private onAppReady = async (): Promise<void> => {
-    await TSAccountProtectionSDKModule.initializeSDK();
+    // this is for iOS only, Android TSAccountProtectionSDK is initialized from application onCreate.
+   await TSAccountProtectionSDKModule.initialize(config.clientId);
   }
 
   // Authentication
@@ -116,10 +117,10 @@ export default class App extends React.Component<Props, State> {
         this.convertMoneyTransferDTOToEventOptions(requestDTO)
       );
 
-        const recommendationResponse = await this.mockServer.fetchRecommendation(triggerActionResponse.actionToken);        
+        const recommendationResponse = await this.mockServer.fetchRecommendation(triggerActionResponse.actionToken);
         console.log("Server returned recomendation for action:");
         console.log(recommendationResponse);
-        
+
         const recomendation = recommendationResponse.recommendation;
         if (recomendation) {
           const message = `Recommendation: ${recomendation.type} | Risk Score: ${recommendationResponse.risk_score}`;

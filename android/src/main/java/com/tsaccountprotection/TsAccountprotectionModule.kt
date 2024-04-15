@@ -33,18 +33,12 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
 
   @ReactMethod
   fun initializeSDK() {
-    if(reactContext.currentActivity != null) {
-      Log.d("TS", ">>> initializeSDK")
-      TSAccountProtection.initializeSDK(reactContext)
-    }
+    // Do nothing Android TSAccountProtectionSDK is initialized from application onCreate
   }
 
   @ReactMethod
   fun initialize(clientId: String) {
-    if(reactContext.currentActivity != null) {
-      Log.d("TS", ">>> initialize SDK clientId=$clientId")
-      TSAccountProtection.initialize(reactContext, clientId)
-    }
+    // Do nothing Android TSAccountProtectionSDK is initialized from application onCreate
   }
 
   @ReactMethod

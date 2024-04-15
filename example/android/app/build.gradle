@@ -124,3 +124,8 @@ repositories {
     url('https://transmit.jfrog.io/artifactory/transmit-security-gradle-release-local/')
   }
 }
+
+dependencies {
+  implementation("com.ts.sdk:accountprotection:2.1.+")
+}
+

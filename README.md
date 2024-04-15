@@ -1,5 +1,5 @@
 # React Native - Transmit Security Account Protection SDK
-#### Detect risk in customer interactions on digital channels, and enable informed identity and trust decisions across the consumer experience. 
+#### Detect risk in customer interactions on digital channels, and enable informed identity and trust decisions across the consumer experience.
 
 ## About Account Protection SDK
 The React Native Detection and Response SDK Wrapper is a versatile tool designed to seamlessly integrate the powerful capabilities of the Detection and Response services into your React Native applications. By encapsulating the APIs of the native SDKs for both iOS and Android platforms, this wrapper empowers enterprises to confidently enhance security measures while maintaining a smooth user experience.
@@ -19,7 +19,7 @@ To integrate this module, you'll need to configure an application in our [portal
 3. Run the example app on a real device using Xcode or Android Studio. Alternatively, execute `yarn example ios` or `yarn example android`.
 <br><br>
 > **Important Security Note: Never store your `secret` in a front-end application.**
-> 
+>
 > The example app utilizes a mock server to manage communication with the authentication platform. This mock server employs the `secret` you have specified in `example/src/config.ts` exclusively for demonstration purposes. It is paramount that you safeguard your `secret` in a secure and confidential location.
 
 ## Installation
@@ -41,20 +41,63 @@ repositories {
     url('https://transmit.jfrog.io/artifactory/transmit-security-gradle-release-local/')
   }
 }
+
+dependencies {
+  implementation("com.ts.sdk:accountprotection:2.1.+")
+}
 ```
 
+## Module Setup
 
-## Module Setup and API
+### Initialize the Android SDK
+First, [update your](https://developer.transmitsecurity.com/guides/risk/quick_start_android/#step-3-initialize-sdk) `strings.xml` by adding
+```xml
+<resources>
+    <!-- Transmit Security Credentials -->
+    <string name="transmit_security_client_id">"CLIENT_ID"</string>
+    <string name="transmit_security_base_url">https://api.transmitsecurity.io/</string>
+</resources>
+```
 
-#### Initialize the SDK
+Next open your `MainApplication.kt` file in your React Native `android` project, and add:
+
+```kt
+override fun onCreate() {
+  super.onCreate()
+  TSAccountProtection.initializeSDK(this.applicationContext) // initialize the SDK
+    ...
+}
+```
+
+### Initialize the iOS SDK
+First, [Create](https://developer.transmitsecurity.com/guides/risk/quick_start_ios/#step-3-initialize-sdk) a filed named `TransmitSecurity.plist` in your native iOS Xcode project:
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>credentials</key>
+	<dict>
+		<key>baseUrl</key>
+		<string>https://api.transmitsecurity.io/</string>
+		<key>clientId</key>
+		<string>[CLIENT_ID]</string>
+	</dict>
+</dict>
+</plist>
+```
+
+Next initialize the SDK whe your app component is ready
 ```js
 import TSAccountProtectionSDKModule, { TSAccountProtectionSDK } from 'react-native-ts-accountprotection';
 
 componentDidMount(): void {
     // Setup the module as soon your component is ready
-    await TSAccountProtectionSDKModule.initialize('REPLACE_WITH_CLIENT_ID');
+    await TSAccountProtectionSDKModule.initializeSDK();
 }
 ```
+
+## Module API
 
 #### Set UserID after authentication
 ```js
@@ -63,26 +106,19 @@ await TSAccountProtectionSDKModule.setUserId(username);
 
 #### Trigger Action
 ```js
-private invokeTriggerAction = async () => {
-    const options: TSAccountProtectionSDK.TSActionEventOptions = {
-      transactionData: {
-        amount: 500,
-        currency: 'USD',
-        payer: { name: 'Payer' }, payee: { name: 'Payee' }
-      }
-    };
-
-    try {
-      const triggerActionResponse = await TSAccountProtectionSDKModule.triggerAction(
-        `${TSAccountProtectionSDK.TSAction.transaction}`,
-        options
-      );
-
-      // Fetch recommendation using `triggerActionResponse.actionToken`
-    } catch (error) {
-      // handle error
+private handleTriggerActionLoginExample = async () => {
+  const triggerActionResponse = await TSAccountProtectionSDKModule.triggerAction(
+    TSAccountProtectionSDK.TSAction.login,
+    { 
+      correlationId: "CORRELATION_ID", 
+      claimUserId: "CLAIM_USER_ID", 
+      referenceUserId: "REFERENCE_USER_ID", 
+      transactionData: undefined
     }
-  }
+  )
+  const actionToken = triggerActionResponse.actionToken;
+  console.log("Action Token: ", actionToken); // Use the action token to invoke the recommendation API.
+}
 ```
 
 #### Clear User ID

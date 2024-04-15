@@ -1,5 +1,5 @@
 <resources>
   <!-- Transmit Security Credentials -->
-  <string name="transmit_security_client_id">REPLACE_WITH_CLIENT_ID</string>
-  <string name="transmit_security_base_url">https://api.transmitsecurity.io/</string>
+  <string name="transmit_security_client_id">hcif5tgftwtcz2qld9adddviqusvvij4</string>
+  <string name="transmit_security_base_url">https://proxy.riskid-stg.io/device/</string>
 </resources>

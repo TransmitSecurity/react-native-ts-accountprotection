@@ -47,7 +47,18 @@ repositories {
 ## Module Setup and API
 
 #### Initialize the SDK
-## There are two methods to init the SDK module, prefered one is initializeSDK
+### There are two methods to init the SDK module, iOS can use both, Android needs to call initializeSDK on Application.onCreate()
+
+### Android
+```kt
+override fun onCreate() {
+    super.onCreate()
+    TSAccountProtection.initializeSDK(this.applicationContext)
+    ...
+  }
+```
+
+### iOS
 
 ## Option 1: initializeSDK()
 # Inthis options the client_id and base_url are predefined in the module plis/strings.xml and axcsible to the sdk

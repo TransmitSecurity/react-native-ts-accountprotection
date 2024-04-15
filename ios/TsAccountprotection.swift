@@ -5,11 +5,29 @@ class TsAccountprotection: NSObject {
     
     private let kTag = "TSAccountprotection"
     
-    @objc(initialize:withResolver:withRejecter:)
-    func initialize(
-        _ clientId: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
+    @objc(initializeSDKIOS:withRejecter:)
+    func initializeSDKIOS(
+        _ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
             runBlockOnMain {
-                TSAccountProtection.initialize(clientId: clientId)
+                do {
+                    try TSAccountProtection.initializeSDK()
+                    resolve(true)
+                } catch {
+                    reject("TsAccountprotectionModule", "Error when calling initializeSDKIOS", error)
+                }
+            }
+        }
+    
+    @objc(initializeIOS:baseUrl:withResolver:withRejecter:)
+    func initializeIOS(
+        _ clientId: String, baseUrl: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
+            runBlockOnMain {
+                if baseUrl.isEmpty {
+                    TSAccountProtection.initialize(clientId: clientId)
+                } else {
+                    TSAccountProtection.initialize(baseUrl: baseUrl, clientId: clientId)
+                }
+                
                 resolve(true)
             }
         }

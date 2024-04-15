@@ -47,25 +47,47 @@ dependencies {
 }
 ```
 
+## Module Setup
 
-## Module Setup and API
-
-#### Initialize the SDK
-### There are two methods to init the SDK module, iOS can use both, Android needs to call initializeSDK on Application.onCreate()
-
-### Android
-```kt
-override fun onCreate() {
-    super.onCreate()
-    TSAccountProtection.initializeSDK(this.applicationContext)
-    ...
-  }
+### Initialize the Android SDK
+First, [update your](https://developer.transmitsecurity.com/guides/risk/quick_start_android/#step-3-initialize-sdk) `strings.xml` by adding
+```xml
+<resources>
+    <!-- Transmit Security Credentials -->
+    <string name="transmit_security_client_id">"CLIENT_ID"</string>
+    <string name="transmit_security_base_url">https://api.transmitsecurity.io/</string>
+</resources>
 ```
 
-### iOS
+Next open your `MainApplication.kt` file in your React Native `android` project, and add:
 
-## Option 1: initializeSDK()
-# Inthis options the client_id and base_url are predefined in the module plis/strings.xml and axcsible to the sdk
+```kt
+override fun onCreate() {
+  super.onCreate()
+  TSAccountProtection.initializeSDK(this.applicationContext) // initialize the SDK
+    ...
+}
+```
+
+### Initialize the iOS SDK
+First, [Create](https://developer.transmitsecurity.com/guides/risk/quick_start_ios/#step-3-initialize-sdk) a filed named `TransmitSecurity.plist` in your native iOS Xcode project:
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>credentials</key>
+	<dict>
+		<key>baseUrl</key>
+		<string>https://api.transmitsecurity.io/</string>
+		<key>clientId</key>
+		<string>[CLIENT_ID]</string>
+	</dict>
+</dict>
+</plist>
+```
+
+Next initialize the SDK whe your app component is ready
 ```js
 import TSAccountProtectionSDKModule, { TSAccountProtectionSDK } from 'react-native-ts-accountprotection';
 
@@ -75,16 +97,7 @@ componentDidMount(): void {
 }
 ```
 
-## Option 2: initialize('REPLACE_WITH_CLIENT_ID')
-# In this option client_id is passed as a variable from the application level to the native module
-```js
-import TSAccountProtectionSDKModule, { TSAccountProtectionSDK } from 'react-native-ts-accountprotection';
-
-componentDidMount(): void {
-    // Setup the module as soon your component is ready
-    await TSAccountProtectionSDKModule.initialize('REPLACE_WITH_CLIENT_ID');
-}
-```
+## Module API
 
 #### Set UserID after authentication
 ```js
@@ -93,26 +106,19 @@ await TSAccountProtectionSDKModule.setUserId(username);
 
 #### Trigger Action
 ```js
-private invokeTriggerAction = async () => {
-    const options: TSAccountProtectionSDK.TSActionEventOptions = {
-      transactionData: {
-        amount: 500,
-        currency: 'USD',
-        payer: { name: 'Payer' }, payee: { name: 'Payee' }
-      }
-    };
-
-    try {
-      const triggerActionResponse = await TSAccountProtectionSDKModule.triggerAction(
-        `${TSAccountProtectionSDK.TSAction.transaction}`,
-        options
-      );
-
-      // Fetch recommendation using `triggerActionResponse.actionToken`
-    } catch (error) {
-      // handle error
+private handleTriggerActionLoginExample = async () => {
+  const triggerActionResponse = await TSAccountProtectionSDKModule.triggerAction(
+    TSAccountProtectionSDK.TSAction.login,
+    { 
+      correlationId: "CORRELATION_ID", 
+      claimUserId: "CLAIM_USER_ID", 
+      referenceUserId: "REFERENCE_USER_ID", 
+      transactionData: undefined
     }
-  }
+  )
+  const actionToken = triggerActionResponse.actionToken;
+  console.log("Action Token: ", actionToken); // Use the action token to invoke the recommendation API.
+}
 ```
 
 #### Clear User ID

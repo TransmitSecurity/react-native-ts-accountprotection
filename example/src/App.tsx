@@ -136,6 +136,20 @@ export default class App extends React.Component<Props, State> {
     }
   }
 
+  private handleTriggerActionLoginExample = async () => {
+    const triggerActionResponse = await TSAccountProtectionSDKModule.triggerAction(
+      TSAccountProtectionSDK.TSAction.login,
+      { 
+        correlationId: "CORRELATION_ID", 
+        claimUserId: "CLAIM_USER_ID", 
+        referenceUserId: "REFERENCE_USER_ID", 
+        transactionData: undefined
+      }
+    )
+    const actionToken = triggerActionResponse.actionToken;
+    console.log("Action Token: ", actionToken);
+  }
+
   private convertMoneyTransferDTOToEventOptions = (requestDTO: MoneyTransferDTO): TSAccountProtectionSDK.TSActionEventOptions => {
     const options: TSAccountProtectionSDK.TSActionEventOptions = {
       transactionData: {

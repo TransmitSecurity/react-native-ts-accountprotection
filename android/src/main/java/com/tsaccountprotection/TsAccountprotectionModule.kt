@@ -37,7 +37,7 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
   }
 
   @ReactMethod
-  fun initializeIOS(clientId: String) {
+  fun initializeIOS(clientId: String, baseUrl: String) {
     Log.d("TS", "Do nothing Android TSAccountProtectionSDK is initialized from application onCreate")
   }
 

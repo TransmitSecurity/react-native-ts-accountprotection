@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { SafeAreaView, Keyboard, Alert } from 'react-native';
+import { SafeAreaView, Keyboard, Alert, Platform } from 'react-native';
 
 import TSAccountProtectionSDKModule, { TSAccountProtectionSDK } from 'react-native-ts-accountprotection';
 import MockServer from './mock-server';
@@ -70,7 +70,10 @@ export default class App extends React.Component<Props, State> {
   // App Configuration
 
   private onAppReady = async (): Promise<void> => {
-    await TSAccountProtectionSDKModule.initialize(config.clientId);
+    // this is for iOS only, Android TSAccountProtectionSDK is initialized from application onCreate.
+    if(Platform.OS === 'ios'){
+      await TSAccountProtectionSDKModule.initializeIOS(config.clientId);
+    }
   }
 
   // Authentication
@@ -136,6 +139,20 @@ export default class App extends React.Component<Props, State> {
     } catch (error) {
       this.setState({ errorMessage: `${error}`, isLoading: false });
     }
+  }
+
+  private handleTriggerActionLoginExample = async () => {
+    const triggerActionResponse = await TSAccountProtectionSDKModule.triggerAction(
+      TSAccountProtectionSDK.TSAction.login,
+      { 
+        correlationId: "CORRELATION_ID", 
+        claimUserId: "CLAIM_USER_ID", 
+        referenceUserId: "REFERENCE_USER_ID", 
+        transactionData: undefined
+      }
+    )
+    const actionToken = triggerActionResponse.actionToken;
+    console.log("Action Token: ", actionToken);
   }
 
   private convertMoneyTransferDTOToEventOptions = (requestDTO: MoneyTransferDTO): TSAccountProtectionSDK.TSActionEventOptions => {

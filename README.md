@@ -62,10 +62,12 @@ First, [update your](https://developer.transmitsecurity.com/guides/risk/quick_st
 Next open your `MainApplication.kt` file in your React Native `android` project, and add:
 
 ```kt
-override fun onCreate() {
-  super.onCreate()
-  TSAccountProtection.initializeSDK(this.applicationContext) // initialize the SDK
-    ...
+class Application : Application() {
+  override fun onCreate() {
+    super.onCreate()
+    TSAccountProtection.initializeSDK(this.applicationContext) // initialize the SDK
+      ...
+  }
 }
 ```
 

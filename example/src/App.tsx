@@ -71,7 +71,7 @@ export default class App extends React.Component<Props, State> {
 
   private onAppReady = async (): Promise<void> => {
     // this is for iOS only, Android TSAccountProtectionSDK is initialized from application onCreate.
-    if(Platform.OS === 'ios'){
+    if (Platform.OS === 'ios') {
       await TSAccountProtectionSDKModule.initializeIOS(config.clientId);
     }
   }
@@ -119,17 +119,18 @@ export default class App extends React.Component<Props, State> {
         this.convertMoneyTransferDTOToEventOptions(requestDTO)
       );
 
-        const recommendationResponse = await this.mockServer.fetchRecommendation(triggerActionResponse.actionToken);
-        console.log("Server returned recomendation for action:");
-        console.log(recommendationResponse);
+      const recommendationResponse = await this.mockServer.fetchRecommendation(triggerActionResponse.actionToken);
+      console.log("Server returned recomendation for action:");
+      console.log(recommendationResponse);
+      Alert.alert("Recommendation Received", JSON.stringify(recommendationResponse));
 
-        const recomendation = recommendationResponse.recommendation;
-        if (recomendation) {
-          const message = `Recommendation: ${recomendation.type} | Risk Score: ${recommendationResponse.risk_score}`;
-          Alert.alert("Recommendation Received", message);
-        }
+      const recomendation = recommendationResponse.recommendation;
+      if (recomendation) {
+        const message = `Recommendation: ${recomendation.type} | Risk Score: ${recommendationResponse.risk_score}`;
+        Alert.alert("Recommendation Received", message);
+      }
 
-        this.setState({ errorMessage: "", isLoading: false });
+      this.setState({ errorMessage: "", isLoading: false });
 
     } catch (error) {
       this.setState({ errorMessage: `${error}`, isLoading: false });
@@ -139,10 +140,10 @@ export default class App extends React.Component<Props, State> {
   private handleTriggerActionLoginExample = async () => {
     const triggerActionResponse = await TSAccountProtectionSDKModule.triggerAction(
       TSAccountProtectionSDK.TSAction.login,
-      { 
-        correlationId: "CORRELATION_ID", 
-        claimUserId: "CLAIM_USER_ID", 
-        referenceUserId: "REFERENCE_USER_ID", 
+      {
+        correlationId: "CORRELATION_ID",
+        claimUserId: "CLAIM_USER_ID",
+        referenceUserId: "REFERENCE_USER_ID",
         transactionData: undefined
       }
     )

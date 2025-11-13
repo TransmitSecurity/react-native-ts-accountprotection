@@ -71,7 +71,7 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
         // Optional, pass 'null' if not used
         object : ActionEventOptions {
           override val correlationId: String?
-            get() = actionEventOptions.claimUserId
+            get() = actionEventOptions.correlationId
           override val claimUserId: String?
             get() = actionEventOptions.claimUserId
           override val referenceUserId: String?

@@ -110,6 +110,14 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
     }
   }
 
+  @ReactMethod
+  fun setLogLevel(logIsEnabled: Boolean) {
+    if(reactContext.currentActivity != null) {
+      Log.d("TS", ">>> setLogLevel logIsEnabled=$logIsEnabled")
+      TSAccountProtection.setLoggingEnabled(logIsEnabled);
+    }
+  }
+
   // endregion
 
   private fun convertOptions(options: ReadableMap): ActionEventOptions {

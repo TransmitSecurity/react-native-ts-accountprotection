@@ -74,6 +74,9 @@ export default class App extends React.Component<Props, State> {
     if (Platform.OS === 'ios') {
       await TSAccountProtectionSDKModule.initializeIOS(config.clientId);
     }
+
+    const isLogEnabled = true;
+    await TSAccountProtectionSDKModule.setLogLevel(isLogEnabled);
   }
 
   // Authentication

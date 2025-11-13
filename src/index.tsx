@@ -74,6 +74,7 @@ export interface TSAccountProtectionSDKModule {
   setUserId: (userId: string) => Promise<boolean>;
   triggerAction: (action: string, options?: TSAccountProtectionSDK.TSActionEventOptions) => Promise<TSAccountProtectionSDK.TSSetActionResponse>;
   clearUser: () => Promise<boolean>;
+  setLogLevel: (isLogEnabled: boolean) => Promise<boolean>;
 }
 
 class RNAccountProtectionSDK implements TSAccountProtectionSDKModule {
@@ -96,6 +97,10 @@ class RNAccountProtectionSDK implements TSAccountProtectionSDKModule {
 
   clearUser(): Promise<boolean> {
     return TsAccountprotection.clearUser();
+  }
+
+  setLogLevel(isLogEnabled: boolean): Promise<boolean> {
+    return TsAccountprotection.setLogLevel(isLogEnabled);
   }
 }
 export default new RNAccountProtectionSDK();

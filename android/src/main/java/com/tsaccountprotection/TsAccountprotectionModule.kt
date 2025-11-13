@@ -71,7 +71,7 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
         // Optional, pass 'null' if not used
         object : ActionEventOptions {
           override val correlationId: String?
-            get() = actionEventOptions.claimUserId
+            get() = actionEventOptions.correlationId
           override val claimUserId: String?
             get() = actionEventOptions.claimUserId
           override val referenceUserId: String?
@@ -107,6 +107,14 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
           }
         }
       )
+    }
+  }
+
+  @ReactMethod
+  fun setLogLevel(logIsEnabled: Boolean) {
+    if(reactContext.currentActivity != null) {
+      Log.d("TS", ">>> setLogLevel logIsEnabled=$logIsEnabled")
+      TSAccountProtection.setLoggingEnabled(logIsEnabled);
     }
   }
 

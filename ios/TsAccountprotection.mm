@@ -9,7 +9,8 @@ RCT_EXTERN_METHOD(setUserId:(NSString *)userId withResolver:(RCTPromiseResolveBl
 RCT_EXTERN_METHOD(triggerAction:(NSString *)action options:(NSDictionary*)options withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject)
 RCT_EXTERN_METHOD(clearUser:(RCTPromiseResolveBlock)resolve withRejecter:(RCTPromiseRejectBlock)reject)
-
+RCT_EXTERN_METHOD(setLogLevel:(BOOL)logIsEnabled withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject)
 + (BOOL)requiresMainQueueSetup
 {
   return YES;

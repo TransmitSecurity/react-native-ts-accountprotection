@@ -94,6 +94,16 @@ class TsAccountprotection: NSObject {
                 resolve(true)
             }
         }
+  
+  @objc(setLogLevel:withResolver:withRejecter:)
+  func setLogLevel(_ logIsEnabled: Bool,
+                   resolver: @escaping RCTPromiseResolveBlock,
+                   rejecter: @escaping RCTPromiseRejectBlock) -> Void {
+    runBlockOnMain {
+      TSAccountProtection.setLogLevel(logIsEnabled ? .debug : .off)
+      resolver(true)
+    }
+  }
     
     // MARK: - Helpers
     

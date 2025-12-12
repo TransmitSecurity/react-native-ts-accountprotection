@@ -54,6 +54,11 @@ export namespace TSAccountProtectionSDK {
     error: string;
   }
 
+  export interface TSConfiguration {
+    enableTrackingBehavioralData?: boolean;
+    enableLocationEvents?: boolean;
+  }
+
   export const enum TSAction {
     login = 'login',
     register = 'register',
@@ -70,7 +75,7 @@ export namespace TSAccountProtectionSDK {
 
 export interface TSAccountProtectionSDKModule {
   initializeSDKIOS: () => Promise<boolean>;
-  initializeIOS: (clientId: string, baseUrl?: string | undefined) => Promise<boolean>; 
+  initializeIOS: (clientId: string, baseUrl?: string | undefined, configurations?: TSAccountProtectionSDK.TSConfiguration) => Promise<boolean>; 
   setUserId: (userId: string) => Promise<boolean>;
   triggerAction: (action: string, options?: TSAccountProtectionSDK.TSActionEventOptions) => Promise<TSAccountProtectionSDK.TSSetActionResponse>;
   clearUser: () => Promise<boolean>;
@@ -83,8 +88,8 @@ class RNAccountProtectionSDK implements TSAccountProtectionSDKModule {
     return TsAccountprotection.initializeSDK();
   }
 
-  initializeIOS(clientId: string, baseUrl?: string | undefined): Promise<boolean> {
-    return TsAccountprotection.initializeIOS(clientId, baseUrl ?? "");
+  initializeIOS(clientId: string, baseUrl?: string | null, configurations?: TSAccountProtectionSDK.TSConfiguration): Promise<boolean> {
+    return TsAccountprotection.initializeIOS(clientId, baseUrl, configurations);
   }
 
   setUserId(userId: string): Promise<boolean> {

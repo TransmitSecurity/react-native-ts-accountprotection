@@ -1,5 +1,17 @@
 # Release Notes
 
+## Version 0.1.5
+
+### New Features
+- **Enhanced iOS initialization with configuration options**: The `initializeIOS` method now accepts an optional `configurations` parameter
+  - `enableTrackingBehavioralData`: Control behavioral data tracking (default: false)
+  - `enableLocationEvents`: Control location event tracking (default: false)
+  - Usage: `await TSAccountProtectionSDKModule.initializeIOS(clientId, baseUrl, { enableTrackingBehavioralData: false, enableLocationEvents: false })`
+
+### API Changes
+- **Updated `initializeIOS` signature**: Added optional `TSConfiguration` parameter for iOS-specific configuration options
+- **New `TSConfiguration` interface**: Defines configuration options for SDK initialization
+
 ## Version 0.1.4
 
 ### New Features

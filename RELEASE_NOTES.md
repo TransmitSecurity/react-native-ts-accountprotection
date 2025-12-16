@@ -1,5 +1,10 @@
 # Release Notes
 
+## Version 0.1.6
+
+### Code Improvements
+- **Simplified Android parameter handling**: Refactored `convertOptions` method to use named parameters and cleaner null handling for better code maintainability
+
 ## Version 0.1.5
 
 ### New Features

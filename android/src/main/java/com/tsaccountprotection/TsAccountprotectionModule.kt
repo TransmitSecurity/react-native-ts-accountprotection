@@ -122,9 +122,9 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
 
   private fun convertOptions(options: ReadableMap): ActionEventOptions {
     return ActionOptions(
-      if(options.hasKey("correlationId")) options.getString("correlationId") as String else null,
-      if(options.hasKey("claimUserId")) options.getString("claimUserId") as String else null,
-      if(options.hasKey("referenceUserId")) options.getString("referenceUserId") as String else null
+      correlationId = options.getString("correlationId"),
+      claimUserId = options.getString("claimUserId"),
+      referenceUserId = options.getString("referenceUserId")
     )
   }
 

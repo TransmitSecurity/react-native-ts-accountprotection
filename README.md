@@ -24,9 +24,29 @@ To integrate this module, you'll need to configure an application in our [portal
 
 ## Installation
 
+### For Expo Projects
+
+This module requires native code and **cannot be used with Expo Go**. You need to use Expo Development Build.
+
+```sh
+# 1. Install the module
+npx expo install react-native-ts-accountprotection
+
+# 2. Generate native code 
+npx expo prebuild
+
+# 3. Run from Xcode/Android Studio
+npx expo run:ios    # or npx expo run:android
+```
+
+**Note:** You'll need to manually configure the native files as described in the "Module Setup" section below, just like React Native CLI users.
+
+### For React Native CLI Projects
+
 ```sh
 npm install react-native-ts-accountprotection
 ```
+
 #### iOS Setup
 You might need to execute `pod install` in your project's `/ios` folder.
 

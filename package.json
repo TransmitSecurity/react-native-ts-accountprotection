@@ -37,7 +37,8 @@
   "keywords": [
     "react-native",
     "ios",
-    "android"
+    "android",
+    "expo"
   ],
   "repository": {
     "type": "git",

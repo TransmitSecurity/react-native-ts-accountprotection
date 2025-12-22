@@ -4,7 +4,7 @@ const LINKING_ERROR =
   `The package 'react-native-ts-accountprotection' doesn't seem to be linked. Make sure: \n\n` +
   Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
   '- You rebuilt the app after installing the package\n' +
-  '- You are not using Expo Go\n';
+  '- If using Expo, you are using a Development Build (not Expo Go)\n';
 
 const TsAccountprotection = NativeModules.TsAccountprotection
   ? NativeModules.TsAccountprotection

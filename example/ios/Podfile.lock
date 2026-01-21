@@ -1,6 +1,6 @@
 PODS:
-  - AccountProtection (2.1.14):
-    - TSCoreSDK (~> 1.0.31)
+  - AccountProtection (0.0.8006):
+    - TSCoreSDK (~> 0.2.8000)
   - boost (1.83.0)
   - DoubleConversion (1.1.6)
   - FBLazyVector (0.73.5)
@@ -888,8 +888,8 @@ PODS:
   - React-Mapbuffer (0.73.5):
     - glog
     - React-debug
-  - react-native-ts-accountprotection (0.1.3):
-    - AccountProtection (~> 2.1.14)
+  - react-native-ts-accountprotection (0.1.6):
+    - AccountProtection (= 0.0.8006)
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
@@ -1061,7 +1061,7 @@ PODS:
     - React-logger (= 0.73.5)
     - React-perflogger (= 0.73.5)
   - SocketRocket (0.6.1)
-  - TSCoreSDK (1.0.31)
+  - TSCoreSDK (0.2.8000)
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -1228,7 +1228,7 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  AccountProtection: 9e293a117ce28446c88702c535dc5653e88ce189
+  AccountProtection: 9e330dd72fe0eb1c0854d496994944cfdbca1251
   boost: d3f49c53809116a5d38da093a8aa78bf551aed09
   DoubleConversion: fea03f2699887d960129cc54bba7e52542b6f953
   FBLazyVector: 56e0e498dbb513b96c40bac6284729ba4e62672d
@@ -1237,7 +1237,7 @@ SPEC CHECKSUMS:
   glog: c5d68082e772fa1c511173d6b30a9de2c05a69a2
   hermes-engine: 1d1835b2cc54c381909d94d1b3c8e0a2f1a94a0e
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
-  RCT-Folly: 7169b2b1c44399c76a47b5deaaba715eeeb476c0
+  RCT-Folly: cd21f1661364f975ae76b3308167ad66b09f53f5
   RCTRequired: 2544c0f1081a5fa12e108bb8cb40e5f4581ccd87
   RCTTypeSafety: 50efabe2b115c11ed03fbf3fd79e2f163ddb5d7c
   React: 84221d5e0ce297bc57c4b6af539a62d812d89f10
@@ -1258,7 +1258,7 @@ SPEC CHECKSUMS:
   React-jsinspector: 32db5e364bcae8fca8cdf8891830636275add0c5
   React-logger: 4136cd22748f4275b04bf82f7b6853ba93b5e0e3
   React-Mapbuffer: ee9b45b26e759a099a3e024df50b25af390ee998
-  react-native-ts-accountprotection: de1fe23b4061bc6577ad9884184fb35c4e48e0c2
+  react-native-ts-accountprotection: e9561a85d1934ffdc5a790c8dc2f8980956a324d
   React-nativeconfig: 1166714a4f7ea57a0df5c2cb44fbc70f98d580f9
   React-NativeModulesApple: d4a50e6739e201716bc90178c143d019c8e09c36
   React-perflogger: 0dd9f1725d55f8264b81efadd373fe1d9cca7dc2
@@ -1280,7 +1280,7 @@ SPEC CHECKSUMS:
   React-utils: c89ba7cfbcc24a54c229928aa971a2539f5bdc21
   ReactCommon: 878d3e9687f81294648a1d025b91ecde7e22179e
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
-  TSCoreSDK: 3c459fa58dc09c44a2ec327cb977268bc78b146c
+  TSCoreSDK: 62d65a01ebde7c0bfe889582cbc6edffa3f09568
   Yoga: a716eea57d0d3430219c0a5a233e1e93ee931eb7
 
 PODFILE CHECKSUM: f4bf8cd8d354e08c7c833a720648a16bd26f7e54

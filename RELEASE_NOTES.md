@@ -1,5 +1,23 @@
 # Release Notes
 
+## Version 0.1.8
+
+### Enhanced Configuration Options
+- **Added new tracking configuration options**: Enhanced SDK initialization with more granular control over data collection
+  - `enableTrackingNavigationData`: Control app navigation pattern tracking (default: true)
+  - `enableTrackingStaticData`: Control device/app static information tracking (default: true)
+- **Updated default behavior**: All tracking options now default to `true` for improved security coverage
+- **Enhanced `TSConfiguration` interface**: Added support for the new tracking options while maintaining backward compatibility
+
+### API Changes
+- **Updated initialization parameters**: Extended `TSConfiguration` with new optional boolean flags for fine-grained tracking control
+
+## Version 0.1.7
+
+### SDK Updates  
+- **Updated to latest native SDK**: Module now uses specific Account Protection SDK version number for improved stability and consistency
+- **Enhanced dependency management**: Locked native SDK dependencies to ensure reliable builds and predictable behavior
+
 ## Version 0.1.6
 
 ### Code Improvements

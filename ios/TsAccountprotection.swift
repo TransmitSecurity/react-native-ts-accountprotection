@@ -24,10 +24,10 @@ class TsAccountprotection: NSObject {
             runBlockOnMain {
               var config: AccountProtection.TSInitSDKConfiguration?
               if let configurations = configurations {
-                let enableTrackingBehavioralData = configurations["enableTrackingBehavioralData"] as? Bool ?? false
-                let enableLocationEvents = configurations["enableLocationEvents"] as? Bool ?? false
-                let enableTrackingNavigationData = configurations["enableTrackingNavigationData"] as? Bool ?? false
-                let enableTrackingStaticData = configurations["enableTrackingStaticData"] as? Bool ?? false
+                let enableTrackingBehavioralData = configurations["enableTrackingBehavioralData"] as? Bool ?? true
+                let enableLocationEvents = configurations["enableLocationEvents"] as? Bool ?? true
+                let enableTrackingNavigationData = configurations["enableTrackingNavigationData"] as? Bool ?? true
+                let enableTrackingStaticData = configurations["enableTrackingStaticData"] as? Bool ?? true
 
                 config = AccountProtection.TSInitSDKConfiguration(
                   enableTrackingBehavioralData: enableTrackingBehavioralData,

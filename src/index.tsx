@@ -57,6 +57,8 @@ export namespace TSAccountProtectionSDK {
   export interface TSConfiguration {
     enableTrackingBehavioralData?: boolean;
     enableLocationEvents?: boolean;
+    enableTrackingNavigationData?: boolean;
+    enableTrackingStaticData?: boolean;
   }
 
   export const enum TSAction {

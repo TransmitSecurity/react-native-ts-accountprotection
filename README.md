@@ -89,14 +89,30 @@ First, [Create](https://developer.transmitsecurity.com/guides/risk/quick_start_i
 </plist>
 ```
 
-Next initialize the SDK whe your app component is ready
+Next initialize the SDK when your app component is ready
 ```js
 import TSAccountProtectionSDKModule, { TSAccountProtectionSDK } from 'react-native-ts-accountprotection';
 
 componentDidMount(): void {
     // Setup the module as soon your component is ready
-    await TSAccountProtectionSDKModule.initializeSDK();
+    await TSAccountProtectionSDKModule.initializeSDKIOS();
 }
+```
+
+### Advanced iOS Initialization (Optional)
+For more control over SDK behavior, you can use the advanced initialization method with configuration options:
+
+```js
+await TSAccountProtectionSDKModule.initializeIOS(
+  clientId, 
+  baseUrl, // optional, can be null
+  {
+    enableTrackingBehavioralData: true,    // Track user behavior patterns (default: true)
+    enableLocationEvents: true,            // Track location events (default: true) 
+    enableTrackingNavigationData: true,    // Track app navigation patterns (default: true)
+    enableTrackingStaticData: true,        // Track device/app static info (default: true)
+  }
+);
 ```
 
 ## Module API
@@ -126,6 +142,13 @@ private handleTriggerActionLoginExample = async () => {
 #### Clear User ID
 ```js
 await TSAccountProtectionSDKModule.clearUser();
+```
+
+#### Set Log Level (Optional)
+Enable or disable SDK debug logging:
+```js
+await TSAccountProtectionSDKModule.setLogLevel(true);  // Enable debug logging
+await TSAccountProtectionSDKModule.setLogLevel(false); // Disable debug logging
 ```
 
 ## Important

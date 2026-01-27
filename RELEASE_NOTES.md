@@ -2,7 +2,7 @@
 
 ## Version 0.1.9
 
-### Breaking Changes
+### Breaking Changes (iOS only)
 - **Removed TSConfiguration interface**: Simplified SDK initialization by removing configuration options
 - **Updated initializeIOS method**: No longer accepts configuration parameters - now only requires `clientId` and optional `baseUrl`
 - **Removed tracking configuration options**: Eliminated `enableTrackingBehavioralData`, `enableLocationEvents`, `enableTrackingNavigationData`, and `enableTrackingStaticData` parameters

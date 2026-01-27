@@ -99,22 +99,6 @@ componentDidMount(): void {
 }
 ```
 
-### Advanced iOS Initialization (Optional)
-For more control over SDK behavior, you can use the advanced initialization method with configuration options:
-
-```js
-await TSAccountProtectionSDKModule.initializeIOS(
-  clientId, 
-  baseUrl, // optional, can be null
-  {
-    enableTrackingBehavioralData: true,    // Track user behavior patterns (default: true)
-    enableLocationEvents: true,            // Track location events (default: true) 
-    enableTrackingNavigationData: true,    // Track app navigation patterns (default: true)
-    enableTrackingStaticData: true,        // Track device/app static info (default: true)
-  }
-);
-```
-
 ## Module API
 
 #### Set UserID after authentication

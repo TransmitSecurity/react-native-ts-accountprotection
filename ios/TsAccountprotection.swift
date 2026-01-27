@@ -18,29 +18,14 @@ class TsAccountprotection: NSObject {
             }
         }
     
-    @objc(initializeIOS:baseUrl:configurations:withResolver:withRejecter:)
+    @objc(initializeIOS:baseUrl:withResolver:withRejecter:)
     func initializeIOS(
-      _ clientId: String, baseUrl: String, configurations: [String: Any]?, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
+      _ clientId: String, baseUrl: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
             runBlockOnMain {
-              var config: AccountProtection.TSInitSDKConfiguration?
-              if let configurations = configurations {
-                let enableTrackingBehavioralData = configurations["enableTrackingBehavioralData"] as? Bool ?? true
-                let enableLocationEvents = configurations["enableLocationEvents"] as? Bool ?? true
-                let enableTrackingNavigationData = configurations["enableTrackingNavigationData"] as? Bool ?? true
-                let enableTrackingStaticData = configurations["enableTrackingStaticData"] as? Bool ?? true
-
-                config = AccountProtection.TSInitSDKConfiguration(
-                  enableTrackingBehavioralData: enableTrackingBehavioralData,
-                  enableLocationEvents: enableLocationEvents,
-                  enableTrackingNavigationData: enableTrackingNavigationData,
-                  enableTrackingStaticData: enableTrackingStaticData
-                )
-              }
-              
                 if baseUrl.isEmpty {
-                    TSAccountProtection.initialize(clientId: clientId, configuration: config)
+                    TSAccountProtection.initialize(clientId: clientId)
                 } else {
-                    TSAccountProtection.initialize(baseUrl: baseUrl, clientId: clientId, configuration: config)
+                    TSAccountProtection.initialize(baseUrl: baseUrl, clientId: clientId)
                 }
                 
                 resolve(true)

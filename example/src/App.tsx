@@ -72,14 +72,7 @@ export default class App extends React.Component<Props, State> {
   private onAppReady = async (): Promise<void> => {
     // this is for iOS only, Android TSAccountProtectionSDK is initialized from application onCreate.
     if (Platform.OS === 'ios') {
-      const testDisabledFeatures = false;
-
-      await TSAccountProtectionSDKModule.initializeIOS(config.clientId, null,{
-        enableTrackingBehavioralData: !testDisabledFeatures,
-        enableLocationEvents: !testDisabledFeatures,
-        enableTrackingNavigationData: !testDisabledFeatures,
-        enableTrackingStaticData: !testDisabledFeatures
-      });
+      await TSAccountProtectionSDKModule.initializeIOS(config.clientId, null);
     }
 
     const isLogEnabled = true;

@@ -91,11 +91,11 @@ First, [Create](https://developer.transmitsecurity.com/guides/risk/quick_start_i
 
 Next initialize the SDK when your app component is ready
 ```js
-import TSAccountProtectionSDKModule, { TSAccountProtectionSDK } from 'react-native-ts-accountprotection';
+import { initializeSDKIOS } from 'react-native-ts-accountprotection';
 
 componentDidMount(): void {
     // Setup the module as soon your component is ready
-    await TSAccountProtectionSDKModule.initializeSDKIOS();
+    await initializeSDKIOS();
 }
 ```
 
@@ -103,14 +103,18 @@ componentDidMount(): void {
 
 #### Set UserID after authentication
 ```js
-await TSAccountProtectionSDKModule.setUserId(username);
+import { setUserId } from 'react-native-ts-accountprotection';
+
+await setUserId(username);
 ```
 
 #### Trigger Action
 ```js
+import { triggerAction, TSAction } from 'react-native-ts-accountprotection';
+
 private handleTriggerActionLoginExample = async () => {
-  const triggerActionResponse = await TSAccountProtectionSDKModule.triggerAction(
-    TSAccountProtectionSDK.TSAction.login,
+  const triggerActionResponse = await triggerAction(
+    TSAction.login,
     { 
       correlationId: "CORRELATION_ID", 
       claimUserId: "CLAIM_USER_ID", 
@@ -125,14 +129,18 @@ private handleTriggerActionLoginExample = async () => {
 
 #### Clear User ID
 ```js
-await TSAccountProtectionSDKModule.clearUser();
+import { clearUser } from 'react-native-ts-accountprotection';
+
+await clearUser();
 ```
 
 #### Set Log Level (Optional)
 Enable or disable SDK debug logging:
 ```js
-await TSAccountProtectionSDKModule.setLogLevel(true);  // Enable debug logging
-await TSAccountProtectionSDKModule.setLogLevel(false); // Disable debug logging
+import { setLogLevel } from 'react-native-ts-accountprotection';
+
+await setLogLevel(true);  // Enable debug logging
+await setLogLevel(false); // Disable debug logging
 ```
 
 ## Important

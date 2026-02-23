@@ -1,5 +1,50 @@
 # Release Notes
 
+## Version 0.2.0
+
+### 🚀 Major API Refactor - Breaking Changes
+
+This release introduces a significant improvement to the module's API design, transitioning from a mixed export pattern to clean named exports. This change aligns with modern React Native best practices and provides a better developer experience.
+
+### Breaking Changes
+- **Removed default export**: The module no longer exports a default class instance
+- **Eliminated namespace**: All types previously under `TSAccountProtectionSDK` namespace are now direct exports
+- **Updated import syntax**: Imports now use named imports instead of mixed default + named imports
+- **Simplified type references**: Types no longer require namespace prefixes
+
+### API Changes
+
+**Before:**
+```js
+import TSAccountProtectionSDKModule, { TSAccountProtectionSDK } from 'react-native-ts-accountprotection';
+
+await TSAccountProtectionSDKModule.initializeIOS(clientId);
+await TSAccountProtectionSDKModule.triggerAction(TSAccountProtectionSDK.TSAction.login, options);
+```
+
+**After:**
+```js
+import { initializeIOS, triggerAction, TSAction } from 'react-native-ts-accountprotection';
+
+await initializeIOS(clientId);
+await triggerAction(TSAction.login, options);
+```
+
+### Benefits
+- **Tree-shaking support**: Enables better bundle optimization and smaller app sizes
+- **Cleaner imports**: More intuitive and concise import statements
+- **Better IntelliSense**: Improved TypeScript auto-completion and code navigation
+- **Modern standards**: Follows current React Native community best practices
+- **Simplified usage**: No more verbose namespace references
+
+### Migration
+A complete migration guide is available in `MIGRATION_0.1.9-0.2.0.md` with step-by-step instructions for updating your existing code.
+
+### Technical Details
+- Removed wrapper class layer for direct native module access
+- Streamlined type definitions without nested namespaces
+- Maintained full API functionality while improving ergonomics
+
 ## Version 0.1.9
 
 ### Breaking Changes (iOS only)

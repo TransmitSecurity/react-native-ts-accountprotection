@@ -2,7 +2,15 @@ import * as React from 'react';
 
 import { SafeAreaView, Keyboard, Alert, Platform } from 'react-native';
 
-import TSAccountProtectionSDKModule, { TSAccountProtectionSDK } from 'react-native-ts-accountprotection';
+import { 
+  initializeIOS,
+  setUserId,
+  setLogLevel,
+  clearUser, 
+  triggerAction, 
+  TSAction, 
+  type TSActionEventOptions 
+} from 'react-native-ts-accountprotection';
 import MockServer from './mock-server';
 
 import Login from './screens/login';
@@ -72,11 +80,11 @@ export default class App extends React.Component<Props, State> {
   private onAppReady = async (): Promise<void> => {
     // this is for iOS only, Android TSAccountProtectionSDK is initialized from application onCreate.
     if (Platform.OS === 'ios') {
-      await TSAccountProtectionSDKModule.initializeIOS(config.clientId, null);
+      await initializeIOS(config.clientId, null);
     }
 
     const isLogEnabled = true;
-    await TSAccountProtectionSDKModule.setLogLevel(isLogEnabled);
+    await setLogLevel(isLogEnabled);
   }
 
   // Authentication
@@ -84,7 +92,7 @@ export default class App extends React.Component<Props, State> {
   private handleLogin = async (username: string, password: string) => {
     Keyboard.dismiss()
     this.setState({ isLoading: true });
-    await TSAccountProtectionSDKModule.setUserId(username);
+    await setUserId(username);
 
     setTimeout(async () => {
       this.navigateToAuthenticatedUserScreen();
@@ -103,7 +111,7 @@ export default class App extends React.Component<Props, State> {
   private onLogout = async () => {
     Keyboard.dismiss()
     this.setState({ isLoading: true });
-    await TSAccountProtectionSDKModule.clearUser();
+    await clearUser();
     this.setState({
       isLoading: false,
       currentScreen: AppScreen.Login
@@ -117,8 +125,8 @@ export default class App extends React.Component<Props, State> {
     this.setState({ isLoading: true });
 
     try {
-      const triggerActionResponse = await TSAccountProtectionSDKModule.triggerAction(
-        `${TSAccountProtectionSDK.TSAction.transaction}`,
+      const triggerActionResponse = await triggerAction(
+        `${TSAction.transaction}`,
         this.convertMoneyTransferDTOToEventOptions(requestDTO)
       );
 
@@ -141,8 +149,8 @@ export default class App extends React.Component<Props, State> {
   }
 
   private handleTriggerActionLoginExample = async () => {
-    const triggerActionResponse = await TSAccountProtectionSDKModule.triggerAction(
-      TSAccountProtectionSDK.TSAction.login,
+    const triggerActionResponse = await triggerAction(
+      TSAction.login,
       {
         correlationId: "CORRELATION_ID",
         claimUserId: "CLAIM_USER_ID",
@@ -154,8 +162,8 @@ export default class App extends React.Component<Props, State> {
     console.log("Action Token: ", actionToken);
   }
 
-  private convertMoneyTransferDTOToEventOptions = (requestDTO: MoneyTransferDTO): TSAccountProtectionSDK.TSActionEventOptions => {
-    const options: TSAccountProtectionSDK.TSActionEventOptions = {
+  private convertMoneyTransferDTOToEventOptions = (requestDTO: MoneyTransferDTO): TSActionEventOptions => {
+    const options: TSActionEventOptions = {
       transactionData: {
         amount: parseFloat(requestDTO.amount),
         currency: 'USD',

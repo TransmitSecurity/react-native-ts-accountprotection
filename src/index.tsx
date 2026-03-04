@@ -68,7 +68,7 @@ export const enum TSAction {
 
 // SDK Functions - Direct exports of the native module methods
 export function initializeSDKIOS(): Promise<boolean> {
-  return TsAccountprotection.initializeSDK();
+  return TsAccountprotection.initializeSDKIOS();
 }
 
 export function initializeIOS(clientId: string, baseUrl?: string | null): Promise<boolean> {

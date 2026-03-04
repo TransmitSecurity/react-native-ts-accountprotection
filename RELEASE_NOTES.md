@@ -1,5 +1,17 @@
 # Release Notes
 
+## Version 0.2.1
+
+### 🐛 Bug Fixes
+- **Fixed initializeSDKIOS function**: Resolved critical issue where `initializeSDKIOS()` was undefined due to incorrect native bridge method mapping
+  - The function was incorrectly calling `TsAccountprotection.initializeSDK()` instead of `TsAccountprotection.initializeSDKIOS()`
+  - This caused runtime errors when trying to initialize the SDK on iOS without parameters
+  - Updated example app to use correct `initializeSDKIOS()` method call
+
+### Technical Details
+- Corrected native method bridge mapping in `initializeSDKIOS` function
+- Updated example implementation to demonstrate proper usage
+
 ## Version 0.2.0
 
 ### 🚀 Major API Refactor - Breaking Changes

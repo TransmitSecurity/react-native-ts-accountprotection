@@ -16,6 +16,7 @@ import com.transmit.accountprotection.api.PayeeData
 import com.transmit.accountprotection.api.PayerData
 import com.transmit.accountprotection.api.TransactionData
 import com.transmit.accountprotection.errors.TransmitSecurityAccountProtectionError
+import com.transmit.accountprotection.userdetails.ISessionTokenCallback
 
 
 class TsAccountprotectionModule(private val reactContext: ReactApplicationContext) :
@@ -61,6 +62,23 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
       Log.d("TS", ">>> clearUser")
       TSAccountProtection.clearUser()
       promise.resolve(true)
+    } else {
+      promise.reject("error", "Activity not available")
+    }
+  }
+
+  @ReactMethod
+  fun getSessionToken(promise: Promise) {
+    if(reactContext.currentActivity != null) {
+      TSAccountProtection.getSessionToken(object : ISessionTokenCallback {
+        override fun onSessionToken(sessionToken: String) {
+          promise.resolve(sessionToken)
+        }
+
+        override fun onFailed(error: TransmitSecurityAccountProtectionError) {
+          promise.reject("error", error.errorMessage)
+        }
+      })
     } else {
       promise.reject("error", "Activity not available")
     }

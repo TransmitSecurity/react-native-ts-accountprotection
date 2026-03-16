@@ -87,6 +87,10 @@ export function clearUser(): Promise<boolean> {
   return TsAccountprotection.clearUser();
 }
 
+export function getSessionToken(): Promise<string> {
+  return TsAccountprotection.getSessionToken();
+}
+
 export function setLogLevel(isLogEnabled: boolean): Promise<boolean> {
   return TsAccountprotection.setLogLevel(isLogEnabled);
 }

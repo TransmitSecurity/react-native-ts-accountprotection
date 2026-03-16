@@ -7,7 +7,7 @@
 		<key>baseUrl</key>
 		<string>https://api.transmitsecurity.io/</string>
 		<key>clientId</key>
-		<string></string>
+		<string>YOUR_CLIENT_ID</string>
 	</dict>
 </dict>
 </plist>

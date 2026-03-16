@@ -7,6 +7,7 @@ import {
   setUserId,
   setLogLevel,
   clearUser, 
+  getSessionToken,
   triggerAction, 
   TSAction, 
   type TSActionEventOptions 
@@ -83,7 +84,7 @@ export default class App extends React.Component<Props, State> {
       await initializeSDKIOS();
     }
 
-    const isLogEnabled = false;
+    const isLogEnabled = true;
     await setLogLevel(isLogEnabled);
   }
 
@@ -92,9 +93,18 @@ export default class App extends React.Component<Props, State> {
   private handleLogin = async (username: string, password: string) => {
     Keyboard.dismiss()
     this.setState({ isLoading: true });
-    await setUserId(username);
-
+    
     setTimeout(async () => {
+      try {
+        // Test getSessionToken after login
+        console.log('[App] Testing getSessionToken after login...');
+        await setUserId(username);
+        const sessionToken = await getSessionToken();
+        console.log('[App] getSessionToken() completed successfully:', sessionToken);
+      } catch (error) {
+        console.error('[App] Error getting session token after login:', error);
+      }
+      
       this.navigateToAuthenticatedUserScreen();
     }, 1500);
   };

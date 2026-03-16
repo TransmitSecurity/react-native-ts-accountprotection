@@ -94,6 +94,36 @@ class TsAccountprotection: NSObject {
                 resolve(true)
             }
         }
+    
+    @objc(getSessionToken:withRejecter:)
+    func getSessionToken(
+        _ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
+            runBlockOnMain {
+                TSAccountProtection.getSessionToken { results in
+                    self.runBlockOnMain {
+                        switch results {
+                        case .success(let sessionToken):
+                            resolve(sessionToken)
+                        case .failure(let error):
+                            switch error {
+                            case .disabled:
+                                reject("disabled", "SDK is disabled", nil)
+                            case .connectionError:
+                                reject("connectionError", "Connection error occurred", nil)
+                            case .internalError:
+                                reject("internalError", "Internal error occurred", nil)
+                            case .notSupportedActionError:
+                                reject("notSupportedActionError", "Action not supported", nil)
+                            case .initializationError:
+                                reject("initializationError", "SDK not initialized", nil)
+                            @unknown default:
+                                reject("unknown", "Unknown error occurred", nil)
+                            }
+                        }
+                    }
+                }
+            }
+        }
   
   @objc(setLogLevel:withResolver:withRejecter:)
   func setLogLevel(_ logIsEnabled: Bool,

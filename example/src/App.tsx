@@ -83,7 +83,7 @@ export default class App extends React.Component<Props, State> {
       await initializeSDKIOS();
     }
 
-    const isLogEnabled = true;
+    const isLogEnabled = false;
     await setLogLevel(isLogEnabled);
   }
 
@@ -111,7 +111,15 @@ export default class App extends React.Component<Props, State> {
   private onLogout = async () => {
     Keyboard.dismiss()
     this.setState({ isLoading: true });
-    await clearUser();
+    
+    try {
+      const clearResult = await clearUser();
+      console.log('[App] clearUser() completed successfully:', clearResult);
+    } catch (error) {
+      console.error('[App] Error during logout process:', error);
+    }
+    
+    console.log('[App] Logout process completed, returning to login screen');
     this.setState({
       isLoading: false,
       currentScreen: AppScreen.Login
@@ -146,20 +154,6 @@ export default class App extends React.Component<Props, State> {
     } catch (error) {
       this.setState({ errorMessage: `${error}`, isLoading: false });
     }
-  }
-
-  private handleTriggerActionLoginExample = async () => {
-    const triggerActionResponse = await triggerAction(
-      TSAction.login,
-      {
-        correlationId: "CORRELATION_ID",
-        claimUserId: "CLAIM_USER_ID",
-        referenceUserId: "REFERENCE_USER_ID",
-        transactionData: undefined
-      }
-    )
-    const actionToken = triggerActionResponse.actionToken;
-    console.log("Action Token: ", actionToken);
   }
 
   private convertMoneyTransferDTOToEventOptions = (requestDTO: MoneyTransferDTO): TSActionEventOptions => {

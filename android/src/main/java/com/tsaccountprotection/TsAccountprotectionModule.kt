@@ -32,29 +32,37 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
   // region Account Protection SDK API
 
   @ReactMethod
-  fun initializeSDKIOS() {
+  fun initializeSDKIOS(promise: Promise) {
     Log.d("TS", "Do nothing Android TSAccountProtectionSDK is initialized from application onCreate")
+    promise.resolve(false)
   }
 
   @ReactMethod
-  fun initializeIOS(clientId: String, baseUrl: String) {
+  fun initializeIOS(clientId: String, baseUrl: String, promise: Promise) {
     Log.d("TS", "Do nothing Android TSAccountProtectionSDK is initialized from application onCreate")
+    promise.resolve(false)
   }
 
   @ReactMethod
-  fun setUserId(userId: String) {
+  fun setUserId(userId: String, promise: Promise) {
     if(reactContext.currentActivity != null) {
       Log.d("TS", ">>> setUserId userId=$userId")
       TSAccountProtection.setUserID(userId)
       reactContext.resources.getString(R.string.transmit_security_client_id)
+      promise.resolve(true)
+    } else {
+      promise.reject("error", "Activity not available")
     }
   }
 
   @ReactMethod
-  fun clearUser() {
+  fun clearUser(promise: Promise) {
     if(reactContext.currentActivity != null) {
       Log.d("TS", ">>> clearUser")
       TSAccountProtection.clearUser()
+      promise.resolve(true)
+    } else {
+      promise.reject("error", "Activity not available")
     }
   }
 
@@ -111,10 +119,13 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
   }
 
   @ReactMethod
-  fun setLogLevel(logIsEnabled: Boolean) {
+  fun setLogLevel(logIsEnabled: Boolean, promise: Promise) {
     if(reactContext.currentActivity != null) {
       Log.d("TS", ">>> setLogLevel logIsEnabled=$logIsEnabled")
       TSAccountProtection.setLoggingEnabled(logIsEnabled);
+      promise.resolve(true)
+    } else {
+      promise.reject("error", "Activity not available")
     }
   }
 

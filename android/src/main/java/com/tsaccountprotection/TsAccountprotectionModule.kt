@@ -15,8 +15,10 @@ import com.transmit.accountprotection.api.ActionEventOptions
 import com.transmit.accountprotection.api.PayeeData
 import com.transmit.accountprotection.api.PayerData
 import com.transmit.accountprotection.api.TransactionData
+import com.transmit.accountprotection.collection.datamanagement.location.TSLocationCollectionMode
 import com.transmit.accountprotection.errors.TransmitSecurityAccountProtectionError
 import com.transmit.accountprotection.userdetails.ISessionTokenCallback
+import com.transmit.accountprotection.collection.datamanagement.location.TSLocationConfig
 
 
 class TsAccountprotectionModule(private val reactContext: ReactApplicationContext) :
@@ -85,39 +87,15 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
   }
 
   @ReactMethod
-  fun triggerAction(action: String, options: ReadableMap, promise: Promise) {
+  fun triggerAction(action: String, options: ReadableMap, locationConfig: ReadableMap?, promise: Promise) {
     if(reactContext.currentActivity != null) {
       Log.d("TS", ">>> triggerAction $action")
 
-      val actionEventOptions = convertOptions(options)
-      val transactionData = convertTransactionData(options)
+      val tsLocationConfig = convertLocationConfig(locationConfig)
 
       TSAccountProtection.triggerAction(
         action,
-        // Optional, pass 'null' if not used
-        object : ActionEventOptions {
-          override val correlationId: String?
-            get() = actionEventOptions.correlationId
-          override val claimUserId: String?
-            get() = actionEventOptions.claimUserId
-          override val referenceUserId: String?
-            get() = actionEventOptions.referenceUserId
-        },
-        // Optional, pass 'null' if not used
-        object : TransactionData {
-          override val amount: Double?
-            get() = transactionData.amount
-          override val currency: String?
-            get() = transactionData.currency
-          override val reason: String?
-            get() = transactionData.reason
-          override val transactionDate: Long?
-            get() = transactionData.transactionDate
-          override val payer: PayerData
-            get() = transactionData.payer!!
-          override val payee: PayeeData
-            get() = transactionData.payee!!
-        },
+        tsLocationConfig,
         object : ITransmitSecurityTriggerActionEventCallback {
           override fun onResponse(token: TransmitSecurityTriggerActionResponse) {
             val actionToken = token.token()
@@ -148,6 +126,22 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
   }
 
   // endregion
+
+  private fun convertLocationConfig(locationConfig: ReadableMap?): TSLocationConfig? {
+    if (locationConfig == null) return null
+
+    val mode = locationConfig.getString("mode")
+    val validFor = if (locationConfig.hasKey("validFor")) locationConfig.getInt("validFor") else 300
+
+    return when (mode) {
+      "disabled" -> TSLocationConfig(TSLocationCollectionMode.Disable)
+      "default" -> TSLocationConfig(TSLocationCollectionMode.Default)
+      "forceCurrent" -> TSLocationConfig(TSLocationCollectionMode.ForceCurrent)
+      "forceLastKnown" -> TSLocationConfig(TSLocationCollectionMode.ForceLastKnown)
+      "lastKnown" ->  TSLocationConfig(TSLocationCollectionMode.LastKnown(validFor))
+      else -> TSLocationConfig(TSLocationCollectionMode.Default)
+    }
+  }
 
   private fun convertOptions(options: ReadableMap): ActionEventOptions {
     return ActionOptions(

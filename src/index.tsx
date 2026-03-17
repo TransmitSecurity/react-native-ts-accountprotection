@@ -71,13 +71,18 @@ export interface TSLocationConfig {
   validFor?: number | null | undefined; // return last-known only if it is not older than `validFor` minutes.
 }
 
+export interface TSInitSDKConfiguration {
+  enableTrackingBehavioralData?: boolean;
+  enableLocationEvents?: boolean;
+}
+
 // SDK Functions - Direct exports of the native module methods
 export function initializeSDKIOS(): Promise<boolean> {
   return TsAccountprotection.initializeSDKIOS();
 }
 
-export function initializeIOS(clientId: string, baseUrl?: string | null): Promise<boolean> {
-  return TsAccountprotection.initializeIOS(clientId, baseUrl);
+export function initializeIOS(clientId: string, baseUrl?: string | null, configuration?: TSInitSDKConfiguration | null): Promise<boolean> {
+  return TsAccountprotection.initializeIOS(clientId, baseUrl, configuration);
 }
 
 export function setUserId(userId: string): Promise<boolean> {

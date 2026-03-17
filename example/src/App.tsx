@@ -4,6 +4,7 @@ import { SafeAreaView, Keyboard, Alert, Platform } from 'react-native';
 
 import { 
   initializeSDKIOS,
+  initializeIOS,
   setUserId,
   setLogLevel,
   clearUser, 
@@ -82,7 +83,11 @@ export default class App extends React.Component<Props, State> {
   private onAppReady = async (): Promise<void> => {
     // this is for iOS only, Android TSAccountProtectionSDK is initialized from application onCreate.
     if (Platform.OS === 'ios') {
-      await initializeSDKIOS();
+      await initializeIOS(config.clientId, config.baseUrl, {
+        enableTrackingBehavioralData: true,
+        enableLocationEvents: true
+      });
+      // await initializeSDKIOS();
     }
 
     const isLogEnabled = true;

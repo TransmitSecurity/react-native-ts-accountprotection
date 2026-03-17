@@ -66,6 +66,11 @@ export const enum TSAction {
   credits_change = 'credits_change',
 }
 
+export interface TSLocationConfig {
+  mode: 'disabled' | 'default' | 'forceCurrent' | 'forceLastKnown' | 'lastKnown';
+  validFor?: number | null | undefined; // return last-known only if it is not older than `validFor` minutes.
+}
+
 // SDK Functions - Direct exports of the native module methods
 export function initializeSDKIOS(): Promise<boolean> {
   return TsAccountprotection.initializeSDKIOS();
@@ -79,8 +84,8 @@ export function setUserId(userId: string): Promise<boolean> {
   return TsAccountprotection.setUserId(userId);
 }
 
-export function triggerAction(action: string, options?: TSActionEventOptions): Promise<TSSetActionResponse> {
-  return TsAccountprotection.triggerAction(action, options);
+export function triggerAction(action: string, options?: TSActionEventOptions, locationConfig?: TSLocationConfig): Promise<TSSetActionResponse> {
+  return TsAccountprotection.triggerAction(action, options, locationConfig);
 }
 
 export function clearUser(): Promise<boolean> {

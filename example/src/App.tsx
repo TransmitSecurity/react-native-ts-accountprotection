@@ -10,7 +10,8 @@ import {
   getSessionToken,
   triggerAction, 
   TSAction, 
-  type TSActionEventOptions 
+  type TSActionEventOptions, 
+  type TSLocationConfig
 } from 'react-native-ts-accountprotection';
 import MockServer from './mock-server';
 
@@ -142,10 +143,16 @@ export default class App extends React.Component<Props, State> {
     Keyboard.dismiss()
     this.setState({ isLoading: true });
 
+    const locationConfig: TSLocationConfig = {
+      mode: 'lastKnown' as const,
+      validFor: 300
+    };
+
     try {
       const triggerActionResponse = await triggerAction(
         `${TSAction.transaction}`,
-        this.convertMoneyTransferDTOToEventOptions(requestDTO)
+        this.convertMoneyTransferDTOToEventOptions(requestDTO),
+        locationConfig
       );
 
       const recommendationResponse = await this.mockServer.fetchRecommendation(triggerActionResponse.actionToken);

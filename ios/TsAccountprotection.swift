@@ -45,46 +45,71 @@ class TsAccountprotection: NSObject {
         }
     }
     
-    @objc(triggerAction:options:withResolver:withRejecter:)
-    func triggerAction(action: String, options: [String: Any]? = nil, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+  @objc(triggerAction:options:locationConfig:withResolver:withRejecter:)
+  func triggerAction(
+    action: String,
+    options: [String: Any]? = nil,
+    locationConfig: [String: Any]? = nil,
+    resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+    
+    runBlockOnMain { [weak self] in
+      
+      var transactionOptions: AccountProtection.TSActionEventOptions? = nil
+      if let options = options {
+        transactionOptions = self?.convertTransactionOptions(options)
+        if transactionOptions == nil {
+          reject("Invalid options provided to triggerAction", nil, nil)
+          return
+        }
+      }
+      
+      var nativeLocationConfig: AccountProtection.TSLocationConfig?
+      
+      if let locationConfig = locationConfig,
+         let mode = locationConfig["mode"] as? String {
         
-        runBlockOnMain { [weak self] in
-            
-            var transactionOptions: AccountProtection.TSActionEventOptions? = nil
-            if let options = options {
-                transactionOptions = self?.convertTransactionOptions(options)
-                if transactionOptions == nil {
-                    reject("Invalid options provided to triggerAction", nil, nil)
-                    return
-                }
+        let validFor = locationConfig["validFor"] as? Int ?? 300
+        
+        switch mode {
+        case "disabled": nativeLocationConfig = .init(mode: .disabled)
+        case "default": nativeLocationConfig = .init(mode: .default)
+        case "forceCurrent": nativeLocationConfig = .init(mode: .forceCurrent)
+        case "forceLastKnown": nativeLocationConfig = .init(mode: .forceLastKnown)
+        case "lastKnown": nativeLocationConfig = .init(mode: .lastKnown(validFor: validFor))
+        default: nativeLocationConfig = .init(mode: .default)
+        }
+      }
+      
+      TSAccountProtection.triggerAction(
+        action,
+        options: transactionOptions,
+        locationConfig: nativeLocationConfig
+      ) { results in
+          self?.runBlockOnMain {
+            switch results {
+            case .success(let response):
+              let actionToken: String = response.actionToken
+              resolve(["success": true, "actionToken": actionToken])
+            case .failure(let error):
+              switch error {
+              case .disabled:
+                reject("disabled", nil, nil)
+              case .connectionError:
+                reject("connectionError", nil, nil)
+              case .internalError:
+                reject("internalError", nil, nil)
+              case .notSupportedActionError:
+                reject("notSupportedActionError", nil, nil)
+              case .initializationError:
+                reject("initializationError", nil, nil)
+              @unknown default:
+                reject("unknown", nil, nil)
+              }
             }
-            
-            TSAccountProtection.triggerAction(action, options: transactionOptions) { results in
-                self?.runBlockOnMain {
-                    switch results {
-                    case .success(let response):
-                        let actionToken: String = response.actionToken
-                        resolve(["success": true, "actionToken": actionToken])
-                    case .failure(let error):
-                        switch error {
-                        case .disabled:
-                            reject("disabled", nil, nil)
-                        case .connectionError:
-                            reject("connectionError", nil, nil)
-                        case .internalError:
-                            reject("internalError", nil, nil)
-                        case .notSupportedActionError:
-                            reject("notSupportedActionError", nil, nil)
-                        case .initializationError:
-                            reject("initializationError", nil, nil)
-                        @unknown default:
-                            reject("unknown", nil, nil)
-                        }
-                    }
-                }
-            }
+          }
         }
     }
+  }
     
     @objc(clearUser:withRejecter:)
     func clearUser(

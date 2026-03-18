@@ -104,3 +104,7 @@ export function getSessionToken(): Promise<string> {
 export function setLogLevel(isLogEnabled: boolean): Promise<boolean> {
   return TsAccountprotection.setLogLevel(isLogEnabled);
 }
+
+export function logPageLoad(pageName: string): Promise<boolean> {
+  return TsAccountprotection.logPageLoad(pageName);
+}

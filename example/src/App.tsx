@@ -12,7 +12,8 @@ import {
   triggerAction, 
   TSAction, 
   type TSActionEventOptions, 
-  type TSLocationConfig
+  type TSLocationConfig,
+  logPageLoad
 } from 'react-native-ts-accountprotection';
 import MockServer from './mock-server';
 
@@ -120,6 +121,7 @@ export default class App extends React.Component<Props, State> {
       isLoading: false,
       currentScreen: AppScreen.AuthenticatedUser
     });
+    logPageLoad('AuthenticatedUserScreen');
   }
 
   // Logout, Clear User
@@ -140,6 +142,7 @@ export default class App extends React.Component<Props, State> {
       isLoading: false,
       currentScreen: AppScreen.Login
     });
+    logPageLoad('LoginScreen');
   }
 
   // Money Transfer

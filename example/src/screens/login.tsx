@@ -1,5 +1,6 @@
 import React, { type ReactElement } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, StatusBar } from 'react-native';
+import { logPageLoad } from 'react-native-ts-accountprotection';
 import config from '../config';
 
 interface LoginProps { 
@@ -19,6 +20,10 @@ export default class Login extends React.Component<LoginProps, LoginState> {
             username: config.demoUserId,
             password: config.demoUserPassword,
         };
+    }
+
+    componentDidMount() {
+        logPageLoad('LoginScreen');
     }
 
     render() {

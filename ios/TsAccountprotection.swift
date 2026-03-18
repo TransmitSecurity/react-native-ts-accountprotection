@@ -175,6 +175,16 @@ class TsAccountprotection: NSObject {
       resolver(true)
     }
   }
+  
+  @objc(logPageLoad:withResolver:withRejecter:)
+  func logPageLoad(_ pageName: String,
+                   resolver: @escaping RCTPromiseResolveBlock,
+                   rejecter: @escaping RCTPromiseRejectBlock) -> Void {
+    runBlockOnMain {
+      TSAccountProtection.logPageLoad(pageName)
+      resolver(true)
+    }
+  }
     
     // MARK: - Helpers
     

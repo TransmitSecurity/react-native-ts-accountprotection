@@ -1,5 +1,6 @@
 import React, { type ReactElement } from 'react';
 import { Text, TextInput, TouchableOpacity, StyleSheet, View, ScrollView, StatusBar } from 'react-native';
+import { logPageLoad } from 'react-native-ts-accountprotection';
 import type { MoneyTransferDTO } from '../App';
 
 interface AuthenticatedUserProps {
@@ -24,6 +25,10 @@ export class AuthenticatedUser extends React.Component<AuthenticatedUserProps, A
             payeeName: '',
             amount: '',
         };
+    }
+
+    componentDidMount() {
+        logPageLoad('AuthenticatedUserScreen');
     }
 
     render() {

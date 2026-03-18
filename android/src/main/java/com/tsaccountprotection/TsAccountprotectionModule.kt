@@ -125,6 +125,17 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
     }
   }
 
+  @ReactMethod
+  fun logPageLoad(pageName: String, promise: Promise) {
+    if(reactContext.currentActivity != null) {
+      Log.d("TS", ">>> logPageLoad pageName=$pageName")
+      TSAccountProtection.logPageLoad(pageName)
+      promise.resolve(true)
+    } else {
+      promise.reject("error", "Activity not available")
+    }
+  }
+
   // endregion
 
   private fun convertLocationConfig(locationConfig: ReadableMap?): TSLocationConfig? {

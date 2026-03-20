@@ -103,6 +103,7 @@ export default class Login extends React.Component<LoginProps, LoginState> {
     private renderLoginButton(): ReactElement {
         return (
             <TouchableOpacity
+                testID='login-button'
                 style={styles.loginButton}
                 onPress={() => this.props.onLogin(this.state.username, this.state.password)}
                 activeOpacity={0.8}

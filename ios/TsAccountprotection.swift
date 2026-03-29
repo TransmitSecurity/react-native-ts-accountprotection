@@ -18,32 +18,33 @@ class TsAccountprotection: NSObject {
             }
         }
     
-    @objc(initializeIOS:baseUrl:configuration:withResolver:withRejecter:)
+    @objc(initializeIOS:baseUrl:configuration:userId:withResolver:withRejecter:)
     func initializeIOS(
-      _ clientId: String, 
-      baseUrl: String, 
-      configuration: [String: Any]?, 
-      resolve: @escaping RCTPromiseResolveBlock, 
+      _ clientId: String,
+      baseUrl: String,
+      configuration: [String: Any]?,
+      userId: String?,
+      resolve: @escaping RCTPromiseResolveBlock,
       reject: @escaping RCTPromiseRejectBlock) -> Void {
             runBlockOnMain {
                 var nativeConfiguration: AccountProtection.TSInitSDKConfiguration?
-                
+
                 if let config = configuration {
                     let enableTrackingBehavioralData = config["enableTrackingBehavioralData"] as? Bool
                     let enableLocationEvents = config["enableLocationEvents"] as? Bool
-                    
+
                     nativeConfiguration = TSInitSDKConfiguration(
                         enableTrackingBehavioralData: enableTrackingBehavioralData ?? true,
                         enableLocationEvents: enableLocationEvents ?? false
                     )
                 }
-                
+
                 if baseUrl.isEmpty {
-                    TSAccountProtection.initialize(clientId: clientId, configuration: nativeConfiguration)
+                    TSAccountProtection.initialize(clientId: clientId, userId: userId, configuration: nativeConfiguration)
                 } else {
-                    TSAccountProtection.initialize(baseUrl: baseUrl, clientId: clientId, configuration: nativeConfiguration)
+                    TSAccountProtection.initialize(baseUrl: baseUrl, clientId: clientId, userId: userId, configuration: nativeConfiguration)
                 }
-                
+
                 resolve(true)
             }
         }

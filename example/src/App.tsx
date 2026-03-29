@@ -87,7 +87,7 @@ export default class App extends React.Component<Props, State> {
       await initializeIOS(config.clientId, config.baseUrl, {
         enableTrackingBehavioralData: true,
         enableLocationEvents: true
-      });
+      }, config.demoUserId);
       // await initializeSDKIOS();
     }
 

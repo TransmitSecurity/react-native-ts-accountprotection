@@ -18,45 +18,41 @@ class TsAccountprotection: NSObject {
             }
         }
     
-    @objc(initializeIOS:baseUrl:configuration:withResolver:withRejecter:)
-    func initializeIOS(
-      _ clientId: String, 
-      baseUrl: String, 
-      configuration: [String: Any]?, 
-      resolve: @escaping RCTPromiseResolveBlock, 
-      reject: @escaping RCTPromiseRejectBlock) -> Void {
-            runBlockOnMain {
-                var nativeConfiguration: AccountProtection.TSInitSDKConfiguration?
-                
-                if let config = configuration {
-                    let enableTrackingBehavioralData = config["enableTrackingBehavioralData"] as? Bool
-                    let enableLocationEvents = config["enableLocationEvents"] as? Bool
-                    
-                    nativeConfiguration = TSInitSDKConfiguration(
-                        enableTrackingBehavioralData: enableTrackingBehavioralData ?? true,
-                        enableLocationEvents: enableLocationEvents ?? false
-                    )
-                }
-                
-                if baseUrl.isEmpty {
-                    TSAccountProtection.initialize(clientId: clientId, configuration: nativeConfiguration)
-                } else {
-                    TSAccountProtection.initialize(baseUrl: baseUrl, clientId: clientId, configuration: nativeConfiguration)
-                }
-                
-                resolve(true)
-            }
+  @objc(initializeIOS:baseUrl:configuration:withResolver:withRejecter:)
+  func initializeIOS(
+    _ clientId: String,
+    baseUrl: String,
+    configuration: [String: Any]?,
+    resolve: @escaping RCTPromiseResolveBlock,
+    reject: @escaping RCTPromiseRejectBlock) -> Void {
+      runBlockOnMain {
+        var nativeConfiguration: AccountProtection.TSInitSDKConfiguration?
+        
+        if let config = configuration {
+          let enableTrackingBehavioralData = config["enableTrackingBehavioralData"] as? Bool
+          let enableLocationEvents = config["enableLocationEvents"] as? Bool
+          
+          nativeConfiguration = TSInitSDKConfiguration(
+            enableTrackingBehavioralData: enableTrackingBehavioralData ?? true,
+            enableLocationEvents: enableLocationEvents ?? false
+          )
         }
+        
+        TSAccountProtection.initialize(baseUrl: baseUrl, clientId: clientId, configuration: nativeConfiguration)
+        
+        resolve(true)
+      }
+    }
     
-    @objc(setUserId:withResolver:withRejecter:)
-    func setUserId(userId: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+    @objc(setAuthenticatedUser:withResolver:withRejecter:)
+    func setAuthenticatedUser(userId: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         guard !userId.isEmpty else {
-            reject("Invalid params provided to .setUserId", nil, nil)
+            reject("Invalid params provided to .setAuthenticatedUser", nil, nil)
             return
         }
         
         runBlockOnMain {
-            TSAccountProtection.setUserId(userId)
+            TSAccountProtection.setAuthenticatedUser(userId)
             resolve(true)
         }
     }
@@ -168,21 +164,25 @@ class TsAccountprotection: NSObject {
   
   @objc(setLogLevel:withResolver:withRejecter:)
   func setLogLevel(_ logIsEnabled: Bool,
-                   resolver: @escaping RCTPromiseResolveBlock,
+                   resolve: @escaping RCTPromiseResolveBlock,
                    rejecter: @escaping RCTPromiseRejectBlock) -> Void {
     runBlockOnMain {
       TSAccountProtection.setLogLevel(logIsEnabled ? .debug : .off)
-      resolver(true)
+      resolve(true)
     }
   }
   
   @objc(logPageLoad:withResolver:withRejecter:)
   func logPageLoad(_ pageName: String,
-                   resolver: @escaping RCTPromiseResolveBlock,
-                   rejecter: @escaping RCTPromiseRejectBlock) -> Void {
+                   resolve: @escaping RCTPromiseResolveBlock,
+                   reject: @escaping RCTPromiseRejectBlock) -> Void {
     runBlockOnMain {
-      TSAccountProtection.logPageLoad(pageName)
-      resolver(true)
+      do {
+        try TSAccountProtection.logPageLoad(pageName)
+        resolve(true)
+      } catch {
+        reject("TsAccountprotectionModule", "Error when calling initializeSDKIOS", error)
+      }
     }
   }
     

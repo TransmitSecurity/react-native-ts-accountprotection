@@ -81,12 +81,12 @@ export function initializeSDKIOS(): Promise<boolean> {
   return TsAccountprotection.initializeSDKIOS();
 }
 
-export function initializeIOS(clientId: string, baseUrl?: string | null, configuration?: TSInitSDKConfiguration | null): Promise<boolean> {
+export function initializeIOS(clientId: string, baseUrl: string | null, configuration?: TSInitSDKConfiguration | null): Promise<boolean> {
   return TsAccountprotection.initializeIOS(clientId, baseUrl, configuration);
 }
 
-export function setUserId(userId: string): Promise<boolean> {
-  return TsAccountprotection.setUserId(userId);
+export function setAuthenticatedUser(userId: string): Promise<boolean> {
+  return TsAccountprotection.setAuthenticatedUser(userId);
 }
 
 export function triggerAction(action: string, options?: TSActionEventOptions, locationConfig?: TSLocationConfig): Promise<TSSetActionResponse> {

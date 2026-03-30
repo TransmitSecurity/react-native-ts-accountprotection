@@ -103,9 +103,9 @@ componentDidMount(): void {
 
 #### Set UserID after authentication
 ```js
-import { setUserId } from 'react-native-ts-accountprotection';
+import { setAuthenticatedUser } from 'react-native-ts-accountprotection';
 
-await setUserId(username);
+await setAuthenticatedUser(username);
 ```
 
 #### Trigger Action

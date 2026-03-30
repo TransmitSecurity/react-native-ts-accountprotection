@@ -5,7 +5,7 @@ import { SafeAreaView, Keyboard, Alert, Platform } from 'react-native';
 import { 
   initializeSDKIOS,
   initializeIOS,
-  setUserId,
+  setAuthenticatedUser,
   setLogLevel,
   clearUser, 
   getSessionToken,
@@ -105,7 +105,7 @@ export default class App extends React.Component<Props, State> {
       try {
         // Test getSessionToken after login
         console.log('[App] Testing getSessionToken after login...');
-        await setUserId(username);
+        await setAuthenticatedUser(username);
         const sessionToken = await getSessionToken();
         console.log('[App] getSessionToken() completed successfully:', sessionToken);
       } catch (error) {

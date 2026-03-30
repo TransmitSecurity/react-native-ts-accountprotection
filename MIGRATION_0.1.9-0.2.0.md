@@ -13,7 +13,7 @@ import TSAccountProtectionSDKModule, { TSAccountProtectionSDK } from 'react-nati
 ```js
 import { 
   initializeSDKIOS, 
-  setUserId, 
+  setAuthenticatedUser, 
   triggerAction, 
   clearUser, 
   setLogLevel, 
@@ -27,7 +27,7 @@ import {
 | Function | Before | After |
 |----------|--------|-------|
 | Initialize iOS | `TSAccountProtectionSDKModule.initializeSDKIOS()` | `initializeSDKIOS()` |
-| Set User ID | `TSAccountProtectionSDKModule.setUserId(id)` | `setUserId(id)` |
+| Set User ID | `TSAccountProtectionSDKModule.setUserId(id)` | `setAuthenticatedUser(id)` |
 | Trigger Action | `TSAccountProtectionSDKModule.triggerAction(...)` | `triggerAction(...)` |
 | Clear User | `TSAccountProtectionSDKModule.clearUser()` | `clearUser()` |
 | Set Log Level | `TSAccountProtectionSDKModule.setLogLevel(...)` | `setLogLevel(...)` |

@@ -105,7 +105,14 @@ componentDidMount(): void {
 ```js
 import { setAuthenticatedUser } from 'react-native-ts-accountprotection';
 
+// Basic usage
 await setAuthenticatedUser(username);
+
+// With optional parameters
+await setAuthenticatedUser(username, { 
+  customProperty: 'value',
+  additionalData: 123 
+});
 ```
 
 #### Trigger Action

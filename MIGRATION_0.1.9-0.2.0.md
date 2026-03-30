@@ -18,7 +18,8 @@ import {
   clearUser, 
   setLogLevel, 
   TSAction,
-  type TSActionEventOptions 
+  type TSActionEventOptions,
+  type TSAuthenticatedUserOptions
 } from 'react-native-ts-accountprotection';
 ```
 
@@ -27,7 +28,7 @@ import {
 | Function | Before | After |
 |----------|--------|-------|
 | Initialize iOS | `TSAccountProtectionSDKModule.initializeSDKIOS()` | `initializeSDKIOS()` |
-| Set User ID | `TSAccountProtectionSDKModule.setUserId(id)` | `setAuthenticatedUser(id)` |
+| Set User ID | `TSAccountProtectionSDKModule.setUserId(id)` | `setAuthenticatedUser(id, options?)` |
 | Trigger Action | `TSAccountProtectionSDKModule.triggerAction(...)` | `triggerAction(...)` |
 | Clear User | `TSAccountProtectionSDKModule.clearUser()` | `clearUser()` |
 | Set Log Level | `TSAccountProtectionSDKModule.setLogLevel(...)` | `setLogLevel(...)` |

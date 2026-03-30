@@ -44,18 +44,18 @@ class TsAccountprotection: NSObject {
       }
     }
     
-    @objc(setAuthenticatedUser:withResolver:withRejecter:)
-    func setAuthenticatedUser(userId: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
-        guard !userId.isEmpty else {
-            reject("Invalid params provided to .setAuthenticatedUser", nil, nil)
-            return
-        }
-        
-        runBlockOnMain {
-            TSAccountProtection.setAuthenticatedUser(userId)
-            resolve(true)
-        }
+  @objc(setAuthenticatedUser:options:withResolver:withRejecter:)
+  func setAuthenticatedUser(userId: String, options: [String: Any]? = nil, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+    guard !userId.isEmpty else {
+      reject("Invalid params provided to .setAuthenticatedUser", nil, nil)
+      return
     }
+    
+    runBlockOnMain {
+      TSAccountProtection.setAuthenticatedUser(userId, options: options)
+      resolve(true)
+    }
+  }
     
   @objc(triggerAction:options:locationConfig:withResolver:withRejecter:)
   func triggerAction(

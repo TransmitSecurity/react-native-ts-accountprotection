@@ -47,9 +47,9 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
   }
 
   @ReactMethod
-  fun setAuthenticatedUser(userId: String, promise: Promise) {
+  fun setAuthenticatedUser(userId: String, options: ReadableMap?, promise: Promise) {
     if(reactContext.currentActivity != null) {
-      Log.d("TS", ">>> setAuthenticatedUser userId=$userId")
+      Log.d("TS", ">>> setAuthenticatedUser userId=$userId, options=$options")
       TSAccountProtection.setUserID(userId)
       reactContext.resources.getString(R.string.transmit_security_client_id)
       promise.resolve(true)

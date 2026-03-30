@@ -76,6 +76,10 @@ export interface TSInitSDKConfiguration {
   enableLocationEvents?: boolean;
 }
 
+export interface TSAuthenticatedUserOptions {
+  [key: string]: any;
+}
+
 // SDK Functions - Direct exports of the native module methods
 export function initializeSDKIOS(): Promise<boolean> {
   return TsAccountprotection.initializeSDKIOS();
@@ -85,8 +89,8 @@ export function initializeIOS(clientId: string, baseUrl: string | null, configur
   return TsAccountprotection.initializeIOS(clientId, baseUrl, configuration);
 }
 
-export function setAuthenticatedUser(userId: string): Promise<boolean> {
-  return TsAccountprotection.setAuthenticatedUser(userId);
+export function setAuthenticatedUser(userId: string, options?: TSAuthenticatedUserOptions): Promise<boolean> {
+  return TsAccountprotection.setAuthenticatedUser(userId, options);
 }
 
 export function triggerAction(action: string, options?: TSActionEventOptions, locationConfig?: TSLocationConfig): Promise<TSSetActionResponse> {

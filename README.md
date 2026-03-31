@@ -91,11 +91,22 @@ First, [Create](https://developer.transmitsecurity.com/guides/risk/quick_start_i
 
 Next initialize the SDK when your app component is ready
 ```js
-import { initializeSDKIOS } from 'react-native-ts-accountprotection';
+import { initializeSDKIOS, initializeIOS } from 'react-native-ts-accountprotection';
 
 componentDidMount(): void {
-    // Setup the module as soon your component is ready
+    // Basic initialization (uses TransmitSecurity.plist configuration)
     await initializeSDKIOS();
+    
+    // OR advanced initialization with parameters and optional userId
+    await initializeIOS(
+        "your-client-id", 
+        "https://api.transmitsecurity.io", 
+        {
+            enableTrackingBehavioralData: true,
+            enableLocationEvents: false
+        },
+        "optional-user-id" // Optional: Set user ID during initialization
+    );
 }
 ```
 

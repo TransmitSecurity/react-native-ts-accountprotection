@@ -16,11 +16,12 @@ class TsAccountprotection: NSObject {
             }
         }
     
-  @objc(initializeIOS:baseUrl:configuration:withResolver:withRejecter:)
+  @objc(initializeIOS:baseUrl:configuration:userId:withResolver:withRejecter:)
   func initializeIOS(
     _ clientId: String,
     baseUrl: String,
     configuration: [String: Any]?,
+    userId: String?,
     resolve: @escaping RCTPromiseResolveBlock,
     reject: @escaping RCTPromiseRejectBlock) -> Void {
       runBlockOnMain {
@@ -36,7 +37,7 @@ class TsAccountprotection: NSObject {
           )
         }
         
-        TSAccountProtection.initialize(baseUrl: baseUrl, clientId: clientId, configuration: nativeConfiguration)
+        TSAccountProtection.initialize(baseUrl: baseUrl, clientId: clientId, userId: userId, configuration: nativeConfiguration)
         
         resolve(true)
       }

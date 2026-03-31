@@ -100,8 +100,8 @@ export function initializeSDKIOS(): Promise<boolean> {
   return TsAccountprotection.initializeSDKIOS();
 }
 
-export function initializeIOS(clientId: string, baseUrl: string | null, configuration?: TSInitSDKConfiguration | null): Promise<boolean> {
-  return TsAccountprotection.initializeIOS(clientId, baseUrl, configuration);
+export function initializeIOS(clientId: string, baseUrl: string | null, configuration?: TSInitSDKConfiguration | null, userId?: string | null): Promise<boolean> {
+  return TsAccountprotection.initializeIOS(clientId, baseUrl, configuration, userId);
 }
 
 export function setAuthenticatedUser(userId: string, options?: TSAuthenticatedUserOptions): Promise<boolean> {

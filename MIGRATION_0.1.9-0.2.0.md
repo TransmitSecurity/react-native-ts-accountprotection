@@ -29,6 +29,7 @@ import {
 | Function | Before | After |
 |----------|--------|-------|
 | Initialize iOS | `TSAccountProtectionSDKModule.initializeSDKIOS()` | `initializeSDKIOS()` |
+| Initialize iOS (Advanced) | *Not available* | `initializeIOS(clientId, baseUrl, config?, userId?)` |
 | Set User ID | `TSAccountProtectionSDKModule.setUserId(id)` | `setAuthenticatedUser(id, options?)` |
 | Trigger Action | `TSAccountProtectionSDKModule.triggerAction(...)` | `triggerAction(...)` |
 | Clear User | `TSAccountProtectionSDKModule.clearUser()` | `clearUser()` |
@@ -89,9 +90,37 @@ const options = {
 
 Available values:
 - `TSClaimedUserIdType.email`
-- `TSClaimedUserIdType.phone`
 - `TSClaimedUserIdType.username`
-- `TSClaimedUserIdType.customerId`
+- `TSClaimedUserIdType.phoneNumber`
+- `TSClaimedUserIdType.accountId`
+- `TSClaimedUserIdType.ssn`
+- `TSClaimedUserIdType.nationalId`
+- `TSClaimedUserIdType.passportNumber`
+- `TSClaimedUserIdType.driversLicenseNumber`
+- `TSClaimedUserIdType.other`
+
+## iOS Initialization Enhancements
+
+The `initializeIOS` method now supports an optional `userId` parameter for setting the user ID during initialization:
+
+**Before (still works):**
+```js
+await initializeSDKIOS(); // Uses TransmitSecurity.plist configuration
+```
+
+**New Advanced Initialization:**
+```js
+// Initialize with specific parameters and optional userId
+await initializeIOS(
+  "your-client-id",
+  "https://api.transmitsecurity.io", 
+  {
+    enableTrackingBehavioralData: true,
+    enableLocationEvents: false
+  },
+  "user-id-123" // Optional: Set user ID during initialization
+);
+```
 
 ## Quick Migration Steps
 

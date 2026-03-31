@@ -2,9 +2,7 @@ import AccountProtection
 
 @objc(TsAccountprotection)
 class TsAccountprotection: NSObject {
-    
-    private let kTag = "TSAccountprotection"
-    
+        
     @objc(initializeSDKIOS:withRejecter:)
     func initializeSDKIOS(
         _ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
@@ -13,7 +11,7 @@ class TsAccountprotection: NSObject {
                     try TSAccountProtection.initializeSDK()
                     resolve(true)
                 } catch {
-                    reject("TsAccountprotectionModule", "Error when calling initializeSDKIOS", error)
+                    reject("TSAccountprotection", "Error when calling initializeSDKIOS", error)
                 }
             }
         }
@@ -47,7 +45,7 @@ class TsAccountprotection: NSObject {
   @objc(setAuthenticatedUser:options:withResolver:withRejecter:)
   func setAuthenticatedUser(userId: String, options: [String: Any]? = nil, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
     guard !userId.isEmpty else {
-      reject("Invalid params provided to .setAuthenticatedUser", nil, nil)
+      reject("Invalid params provided to setAuthenticatedUser", nil, nil)
       return
     }
     
@@ -181,7 +179,7 @@ class TsAccountprotection: NSObject {
         try TSAccountProtection.logPageLoad(pageName)
         resolve(true)
       } catch {
-        reject("TsAccountprotectionModule", "Error when calling initializeSDKIOS", error)
+        reject("logPageLoad Error", error.localizedDescription, nil)
       }
     }
   }
@@ -198,16 +196,14 @@ class TsAccountprotection: NSObject {
         let referenceUserId = options["referenceUserId"] as? String
         let transactionData = convertTransactionDataFromOptions(options)
         
-        // Convert string to enum for claimedUserIdType
         var claimedUserIdType: AccountProtection.TSClaimedUserIdType?
         if let typeString = claimedUserIdTypeString {
             claimedUserIdType = convertStringToClaimedUserIdType(typeString)
         }
         
-        // For backward compatibility: use claimedUserId if provided, otherwise fall back to claimUserId
+        // claimUserId is now deprecated, if the new `claimedUserId` is not provided, fallback to `claimUserId`
         let finalClaimedUserId = claimedUserId ?? claimUserId
         
-        // Use the new non-deprecated initializer
         let options = TSActionEventOptions(
             correlationId: correlationId,
             claimedUserId: finalClaimedUserId,
@@ -219,29 +215,18 @@ class TsAccountprotection: NSObject {
         return options
     }
     
-    // Convert string to TSClaimedUserIdType enum
     private func convertStringToClaimedUserIdType(_ typeString: String) -> AccountProtection.TSClaimedUserIdType? {
         switch typeString {
-        case "email":
-            return AccountProtection.TSClaimedUserIdType.email
-        case "username":
-            return AccountProtection.TSClaimedUserIdType.username
-        case "phone_number":
-            return AccountProtection.TSClaimedUserIdType.phoneNumber
-        case "account_id":
-            return AccountProtection.TSClaimedUserIdType.accountId
-        case "ssn":
-            return AccountProtection.TSClaimedUserIdType.ssn
-        case "national_id":
-            return AccountProtection.TSClaimedUserIdType.nationalId
-        case "passport_number":
-            return AccountProtection.TSClaimedUserIdType.passportNumber
-        case "drivers_license_number":
-            return AccountProtection.TSClaimedUserIdType.driversLicenseNumber
-        case "other":
-            return AccountProtection.TSClaimedUserIdType.other
-        default:
-            return nil
+        case "email": return .email
+        case "username": return .username
+        case "phone_number": return .phoneNumber
+        case "account_id": return .accountId
+        case "ssn": return .ssn
+        case "national_id": return .nationalId
+        case "passport_number": return .passportNumber
+        case "drivers_license_number": return .driversLicenseNumber
+        case "other": return .other
+        default: return nil
         }
     }
     

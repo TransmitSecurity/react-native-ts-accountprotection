@@ -117,14 +117,16 @@ await setAuthenticatedUser(username, {
 
 #### Trigger Action
 ```js
-import { triggerAction, TSAction } from 'react-native-ts-accountprotection';
+import { triggerAction, TSAction, TSClaimedUserIdType } from 'react-native-ts-accountprotection';
 
 private handleTriggerActionLoginExample = async () => {
   const triggerActionResponse = await triggerAction(
     TSAction.login,
     { 
       correlationId: "CORRELATION_ID", 
-      claimUserId: "CLAIM_USER_ID", 
+      claimUserId: "CLAIM_USER_ID", // @deprecated - use claimedUserId instead
+      claimedUserId: "user@example.com",
+      claimedUserIdType: TSClaimedUserIdType.email,
       referenceUserId: "REFERENCE_USER_ID", 
       transactionData: undefined
     }
@@ -133,6 +135,17 @@ private handleTriggerActionLoginExample = async () => {
   console.log("Action Token: ", actionToken); // Use the action token to invoke the recommendation API.
 }
 ```
+
+**Available TSClaimedUserIdType options:**
+- `TSClaimedUserIdType.email` - Email address
+- `TSClaimedUserIdType.username` - Username
+- `TSClaimedUserIdType.phoneNumber` - Phone number
+- `TSClaimedUserIdType.accountId` - Account ID
+- `TSClaimedUserIdType.ssn` - Social Security Number
+- `TSClaimedUserIdType.nationalId` - National ID
+- `TSClaimedUserIdType.passportNumber` - Passport number
+- `TSClaimedUserIdType.driversLicenseNumber` - Driver's license number
+- `TSClaimedUserIdType.other` - Other identifier type
 
 #### Clear User ID
 ```js

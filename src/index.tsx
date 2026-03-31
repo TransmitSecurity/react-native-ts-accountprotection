@@ -42,7 +42,10 @@ export interface TSTransactionData {
 
 export interface TSActionEventOptions {
   correlationId?: string;
+  /** @deprecated Use claimedUserId instead */
   claimUserId?: string;
+  claimedUserId?: string;
+  claimedUserIdType?: TSClaimedUserIdType;
   referenceUserId?: string;
   transactionData?: TSTransactionData;
 }
@@ -64,6 +67,18 @@ export const enum TSAction {
   account_auth_change = 'account_auth_change',
   withdraw = 'withdraw',
   credits_change = 'credits_change',
+}
+
+export const enum TSClaimedUserIdType {
+  email = 'email',
+  username = 'username',
+  phoneNumber = 'phone_number',
+  accountId = 'account_id',
+  ssn = 'ssn',
+  nationalId = 'national_id',
+  passportNumber = 'passport_number',
+  driversLicenseNumber = 'drivers_license_number',
+  other = 'other',
 }
 
 export interface TSLocationConfig {

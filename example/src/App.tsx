@@ -11,6 +11,7 @@ import {
   getSessionToken,
   triggerAction, 
   TSAction, 
+  TSClaimedUserIdType,
   type TSActionEventOptions, 
   type TSLocationConfig,
   logPageLoad

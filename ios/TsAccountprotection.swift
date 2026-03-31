@@ -193,17 +193,56 @@ class TsAccountprotection: NSObject {
         
         let correlationId = options["correlationId"] as? String
         let claimUserId = options["claimUserId"] as? String
+        let claimedUserId = options["claimedUserId"] as? String
+        let claimedUserIdTypeString = options["claimedUserIdType"] as? String
         let referenceUserId = options["referenceUserId"] as? String
         let transactionData = convertTransactionDataFromOptions(options)
         
+        // Convert string to enum for claimedUserIdType
+        var claimedUserIdType: AccountProtection.TSClaimedUserIdType?
+        if let typeString = claimedUserIdTypeString {
+            claimedUserIdType = convertStringToClaimedUserIdType(typeString)
+        }
+        
+        // For backward compatibility: use claimedUserId if provided, otherwise fall back to claimUserId
+        let finalClaimedUserId = claimedUserId ?? claimUserId
+        
+        // Use the new non-deprecated initializer
         let options = TSActionEventOptions(
             correlationId: correlationId,
-            claimUserId: claimUserId,
+            claimedUserId: finalClaimedUserId,
             referenceUserId: referenceUserId,
-            transactionData: transactionData
+            transactionData: transactionData,
+            claimedUserIdType: claimedUserIdType
         )
         
         return options
+    }
+    
+    // Convert string to TSClaimedUserIdType enum
+    private func convertStringToClaimedUserIdType(_ typeString: String) -> AccountProtection.TSClaimedUserIdType? {
+        switch typeString {
+        case "email":
+            return AccountProtection.TSClaimedUserIdType.email
+        case "username":
+            return AccountProtection.TSClaimedUserIdType.username
+        case "phone_number":
+            return AccountProtection.TSClaimedUserIdType.phoneNumber
+        case "account_id":
+            return AccountProtection.TSClaimedUserIdType.accountId
+        case "ssn":
+            return AccountProtection.TSClaimedUserIdType.ssn
+        case "national_id":
+            return AccountProtection.TSClaimedUserIdType.nationalId
+        case "passport_number":
+            return AccountProtection.TSClaimedUserIdType.passportNumber
+        case "drivers_license_number":
+            return AccountProtection.TSClaimedUserIdType.driversLicenseNumber
+        case "other":
+            return AccountProtection.TSClaimedUserIdType.other
+        default:
+            return nil
+        }
     }
     
     private func doMandatoryOptionsExist(_ options: [String: Any]) -> Bool {

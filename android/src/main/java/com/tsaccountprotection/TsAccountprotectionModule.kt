@@ -91,10 +91,40 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
     if(reactContext.currentActivity != null) {
       Log.d("TS", ">>> triggerAction $action")
 
+      val actionEventOptions = convertOptions(options)
+      val transactionData = convertTransactionData(options)
       val tsLocationConfig = convertLocationConfig(locationConfig)
 
       TSAccountProtection.triggerAction(
         action,
+        // Optional, pass 'null' if not used
+        object : ActionEventOptions {
+          override val correlationId: String?
+            get() = actionEventOptions.correlationId
+          override val claimUserId: String?
+            get() = actionEventOptions.claimUserId
+          override val claimedUserId: String?
+            get() = actionEventOptions.claimedUserId
+          override val claimedUserIdType: com.transmit.accountprotection.api.TSClaimedUserIdType?
+            get() = actionEventOptions.claimedUserIdType
+          override val referenceUserId: String?
+            get() = actionEventOptions.referenceUserId
+        },
+        // Optional, pass 'null' if not used
+        object : TransactionData {
+          override val amount: Double?
+            get() = transactionData.amount
+          override val currency: String?
+            get() = transactionData.currency
+          override val reason: String?
+            get() = transactionData.reason
+          override val transactionDate: Long?
+            get() = transactionData.transactionDate
+          override val payer: PayerData
+            get() = transactionData.payer!!
+          override val payee: PayeeData
+            get() = transactionData.payee!!
+        },
         tsLocationConfig,
         object : ITransmitSecurityTriggerActionEventCallback {
           override fun onResponse(token: TransmitSecurityTriggerActionResponse) {
@@ -155,11 +185,33 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
   }
 
   private fun convertOptions(options: ReadableMap): ActionEventOptions {
+    // For backward compatibility: use claimedUserId if provided, otherwise fall back to claimUserId
+    val claimUserId = options.getString("claimUserId")
+    val claimedUserId = options.getString("claimedUserId")
+    val finalClaimedUserId = claimedUserId ?: claimUserId
+    
     return ActionOptions(
       correlationId = options.getString("correlationId"),
-      claimUserId = options.getString("claimUserId"),
+      claimUserId = claimUserId, // Keep for backward compatibility
+      claimedUserId = finalClaimedUserId,
+      claimedUserIdType = convertStringToClaimedUserIdType(options.getString("claimedUserIdType")),
       referenceUserId = options.getString("referenceUserId")
     )
+  }
+
+  private fun convertStringToClaimedUserIdType(typeString: String?): com.transmit.accountprotection.api.TSClaimedUserIdType? {
+    return when (typeString) {
+      "email" -> com.transmit.accountprotection.api.TSClaimedUserIdType.EMAIL
+      "username" -> com.transmit.accountprotection.api.TSClaimedUserIdType.USERNAME
+      "phone_number" -> com.transmit.accountprotection.api.TSClaimedUserIdType.PHONE_NUMBER
+      "account_id" -> com.transmit.accountprotection.api.TSClaimedUserIdType.ACCOUNT_ID
+      "ssn" -> com.transmit.accountprotection.api.TSClaimedUserIdType.SSN
+      "national_id" -> com.transmit.accountprotection.api.TSClaimedUserIdType.NATIONAL_ID
+      "passport_number" -> com.transmit.accountprotection.api.TSClaimedUserIdType.PASSPORT_NUMBER
+      "drivers_license_number" -> com.transmit.accountprotection.api.TSClaimedUserIdType.DRIVERS_LICENSE_NUMBER
+      "other" -> com.transmit.accountprotection.api.TSClaimedUserIdType.OTHER
+      else -> null
+    }
   }
 
   private fun convertTransactionData(options: ReadableMap): TransactionData {
@@ -198,6 +250,8 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
 
 class ActionOptions(
   override val claimUserId: String?,
+  override val claimedUserId: String?,
+  override val claimedUserIdType: com.transmit.accountprotection.api.TSClaimedUserIdType?,
   override val correlationId: String?,
   override val referenceUserId: String?
 ) : ActionEventOptions

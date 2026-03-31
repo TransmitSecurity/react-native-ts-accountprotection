@@ -56,11 +56,12 @@ class TsAccountprotection: NSObject {
     }
   }
     
-  @objc(triggerAction:options:locationConfig:withResolver:withRejecter:)
+  @objc(triggerAction:options:locationConfig:customAttributes:withResolver:withRejecter:)
   func triggerAction(
     action: String,
     options: [String: Any]? = nil,
     locationConfig: [String: Any]? = nil,
+    customAttributes: [String: Any]? = nil,
     resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
     
     runBlockOnMain { [weak self] in
@@ -93,6 +94,7 @@ class TsAccountprotection: NSObject {
       
       TSAccountProtection.triggerAction(
         action,
+        customAttributes: customAttributes,
         options: transactionOptions,
         locationConfig: nativeLocationConfig
       ) { results in

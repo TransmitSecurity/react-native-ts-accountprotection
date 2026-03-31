@@ -4,7 +4,35 @@ import android.util.Log
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
-import com.facebook.react.bridge.ReactMethod
+import com.facebook.react.bridge.    }
+  }
+
+  private fun convertCustomAttributes(customAttributes: ReadableMap?): Map<String, Any>? {
+    if (customAttributes == null) return null
+    
+    val map = mutableMapOf<String, Any>()
+    val iterator = customAttributes.keySetIterator()
+    
+    while (iterator.hasNextKey()) {
+      val key = iterator.nextKey()
+      val value = when (customAttributes.getType(key)) {
+        ReadableType.Boolean -> customAttributes.getBoolean(key)
+        ReadableType.Number -> customAttributes.getDouble(key)
+        ReadableType.String -> customAttributes.getString(key)
+        ReadableType.Null -> null
+        ReadableType.Map -> customAttributes.getMap(key)
+        ReadableType.Array -> customAttributes.getArray(key)
+      }
+      if (value != null) {
+        map[key] = value
+      }
+    }
+    
+    return map
+  }
+}
+
+class ActionOptions(Method
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.WritableMap
 import com.facebook.react.bridge.WritableNativeMap
@@ -87,16 +115,18 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
   }
 
   @ReactMethod
-  fun triggerAction(action: String, options: ReadableMap, locationConfig: ReadableMap?, promise: Promise) {
+  fun triggerAction(action: String, options: ReadableMap, locationConfig: ReadableMap?, customAttributes: ReadableMap?, promise: Promise) {
     if(reactContext.currentActivity != null) {
       Log.d("TS", ">>> triggerAction $action")
 
       val actionEventOptions = convertOptions(options)
       val transactionData = convertTransactionData(options)
       val tsLocationConfig = convertLocationConfig(locationConfig)
+      val customAttributesMap = convertCustomAttributes(customAttributes)
 
       TSAccountProtection.triggerAction(
         action,
+        customAttributesMap,
         // Optional, pass 'null' if not used
         object : ActionEventOptions {
           override val correlationId: String?

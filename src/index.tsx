@@ -108,8 +108,8 @@ export function setAuthenticatedUser(userId: string, options?: TSAuthenticatedUs
   return TsAccountprotection.setAuthenticatedUser(userId, options);
 }
 
-export function triggerAction(action: string, options?: TSActionEventOptions, locationConfig?: TSLocationConfig): Promise<TSSetActionResponse> {
-  return TsAccountprotection.triggerAction(action, options, locationConfig);
+export function triggerAction(action: string, options?: TSActionEventOptions, locationConfig?: TSLocationConfig, customAttributes?: {[key: string]: any}): Promise<TSSetActionResponse> {
+  return TsAccountprotection.triggerAction(action, options, locationConfig, customAttributes);
 }
 
 export function clearUser(): Promise<boolean> {

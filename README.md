@@ -140,6 +140,12 @@ private handleTriggerActionLoginExample = async () => {
       claimedUserIdType: TSClaimedUserIdType.email,
       referenceUserId: "REFERENCE_USER_ID", 
       transactionData: undefined
+    },
+    undefined, // locationConfig (optional)
+    { // customAttributes (optional)
+      userLevel: "premium",
+      sessionId: "sess_12345",
+      deviceFingerprint: "fp_abcdef"
     }
   )
   const actionToken = triggerActionResponse.actionToken;
@@ -157,6 +163,34 @@ private handleTriggerActionLoginExample = async () => {
 - `TSClaimedUserIdType.passportNumber` - Passport number
 - `TSClaimedUserIdType.driversLicenseNumber` - Driver's license number
 - `TSClaimedUserIdType.other` - Other identifier type
+
+**Custom Attributes (Optional):**
+The `triggerAction` method accepts an optional `customAttributes` parameter that allows you to pass additional contextual data:
+
+```js
+// Example with custom attributes
+await triggerAction(
+  TSAction.transaction,
+  {
+    claimedUserId: "user@example.com",
+    claimedUserIdType: TSClaimedUserIdType.email,
+    transactionData: {
+      amount: 100.00,
+      currency: "USD"
+    }
+  },
+  undefined, // locationConfig
+  { // customAttributes
+    userLevel: "premium",
+    deviceType: "mobile",
+    sessionDuration: 1800,
+    previousTransactionCount: 5,
+    riskScore: 0.2
+  }
+);
+```
+
+The `customAttributes` object can contain any key-value pairs relevant to your risk assessment needs.
 
 #### Clear User ID
 ```js

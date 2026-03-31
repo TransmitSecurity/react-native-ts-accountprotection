@@ -4,36 +4,9 @@ import android.util.Log
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
-import com.facebook.react.bridge.    }
-  }
-
-  private fun convertCustomAttributes(customAttributes: ReadableMap?): Map<String, Any>? {
-    if (customAttributes == null) return null
-    
-    val map = mutableMapOf<String, Any>()
-    val iterator = customAttributes.keySetIterator()
-    
-    while (iterator.hasNextKey()) {
-      val key = iterator.nextKey()
-      val value = when (customAttributes.getType(key)) {
-        ReadableType.Boolean -> customAttributes.getBoolean(key)
-        ReadableType.Number -> customAttributes.getDouble(key)
-        ReadableType.String -> customAttributes.getString(key)
-        ReadableType.Null -> null
-        ReadableType.Map -> customAttributes.getMap(key)
-        ReadableType.Array -> customAttributes.getArray(key)
-      }
-      if (value != null) {
-        map[key] = value
-      }
-    }
-    
-    return map
-  }
-}
-
-class ActionOptions(Method
+import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableMap
+import com.facebook.react.bridge.ReadableType
 import com.facebook.react.bridge.WritableMap
 import com.facebook.react.bridge.WritableNativeMap
 import com.transmit.accountprotection.ITransmitSecurityTriggerActionEventCallback
@@ -47,7 +20,7 @@ import com.transmit.accountprotection.collection.datamanagement.location.TSLocat
 import com.transmit.accountprotection.errors.TransmitSecurityAccountProtectionError
 import com.transmit.accountprotection.userdetails.ISessionTokenCallback
 import com.transmit.accountprotection.collection.datamanagement.location.TSLocationConfig
-
+import com.transmit.accountprotection.TSClaimedUserIdType
 
 class TsAccountprotectionModule(private val reactContext: ReactApplicationContext) :
   ReactContextBaseJavaModule(reactContext) {
@@ -77,9 +50,8 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
   @ReactMethod
   fun setAuthenticatedUser(userId: String, options: ReadableMap?, promise: Promise) {
     if(reactContext.currentActivity != null) {
-      Log.d("TS", ">>> setAuthenticatedUser userId=$userId, options=$options")
-      TSAccountProtection.setUserID(userId)
-      reactContext.resources.getString(R.string.transmit_security_client_id)
+      val optionsMap = convertCustomAttributes(options)
+      TSAccountProtection.setAuthenticatedUser(userId, optionsMap)
       promise.resolve(true)
     } else {
       promise.reject("error", "Activity not available")
@@ -126,35 +98,9 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
 
       TSAccountProtection.triggerAction(
         action,
+        actionEventOptions,
+        transactionData,
         customAttributesMap,
-        // Optional, pass 'null' if not used
-        object : ActionEventOptions {
-          override val correlationId: String?
-            get() = actionEventOptions.correlationId
-          override val claimUserId: String?
-            get() = actionEventOptions.claimUserId
-          override val claimedUserId: String?
-            get() = actionEventOptions.claimedUserId
-          override val claimedUserIdType: com.transmit.accountprotection.api.TSClaimedUserIdType?
-            get() = actionEventOptions.claimedUserIdType
-          override val referenceUserId: String?
-            get() = actionEventOptions.referenceUserId
-        },
-        // Optional, pass 'null' if not used
-        object : TransactionData {
-          override val amount: Double?
-            get() = transactionData.amount
-          override val currency: String?
-            get() = transactionData.currency
-          override val reason: String?
-            get() = transactionData.reason
-          override val transactionDate: Long?
-            get() = transactionData.transactionDate
-          override val payer: PayerData
-            get() = transactionData.payer!!
-          override val payee: PayeeData
-            get() = transactionData.payee!!
-        },
         tsLocationConfig,
         object : ITransmitSecurityTriggerActionEventCallback {
           override fun onResponse(token: TransmitSecurityTriggerActionResponse) {
@@ -198,6 +144,30 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
 
   // endregion
 
+  private fun convertCustomAttributes(customAttributes: ReadableMap?): Map<String, Any>? {
+    if (customAttributes == null) return null
+
+    val map = mutableMapOf<String, Any>()
+    val iterator = customAttributes.keySetIterator()
+
+    while (iterator.hasNextKey()) {
+      val key = iterator.nextKey()
+      val value = when (customAttributes.getType(key)) {
+        ReadableType.Boolean -> customAttributes.getBoolean(key)
+        ReadableType.Number -> customAttributes.getDouble(key)
+        ReadableType.String -> customAttributes.getString(key)
+        ReadableType.Null -> null
+        ReadableType.Map -> customAttributes.getMap(key)
+        ReadableType.Array -> customAttributes.getArray(key)
+      }
+      if (value != null) {
+        map[key] = value
+      }
+    }
+
+    return map
+  }
+
   private fun convertLocationConfig(locationConfig: ReadableMap?): TSLocationConfig? {
     if (locationConfig == null) return null
 
@@ -219,7 +189,7 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
     val claimUserId = options.getString("claimUserId")
     val claimedUserId = options.getString("claimedUserId")
     val finalClaimedUserId = claimedUserId ?: claimUserId
-    
+
     return ActionOptions(
       correlationId = options.getString("correlationId"),
       claimUserId = claimUserId, // Keep for backward compatibility
@@ -229,17 +199,17 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
     )
   }
 
-  private fun convertStringToClaimedUserIdType(typeString: String?): com.transmit.accountprotection.api.TSClaimedUserIdType? {
+  private fun convertStringToClaimedUserIdType(typeString: String?): TSClaimedUserIdType? {
     return when (typeString) {
-      "email" -> com.transmit.accountprotection.api.TSClaimedUserIdType.EMAIL
-      "username" -> com.transmit.accountprotection.api.TSClaimedUserIdType.USERNAME
-      "phone_number" -> com.transmit.accountprotection.api.TSClaimedUserIdType.PHONE_NUMBER
-      "account_id" -> com.transmit.accountprotection.api.TSClaimedUserIdType.ACCOUNT_ID
-      "ssn" -> com.transmit.accountprotection.api.TSClaimedUserIdType.SSN
-      "national_id" -> com.transmit.accountprotection.api.TSClaimedUserIdType.NATIONAL_ID
-      "passport_number" -> com.transmit.accountprotection.api.TSClaimedUserIdType.PASSPORT_NUMBER
-      "drivers_license_number" -> com.transmit.accountprotection.api.TSClaimedUserIdType.DRIVERS_LICENSE_NUMBER
-      "other" -> com.transmit.accountprotection.api.TSClaimedUserIdType.OTHER
+      "email" -> TSClaimedUserIdType.Email
+      "username" -> TSClaimedUserIdType.Username
+      "phone_number" -> TSClaimedUserIdType.PhoneNumber
+      "account_id" -> TSClaimedUserIdType.AccountId
+      "ssn" -> TSClaimedUserIdType.Ssn
+      "national_id" -> TSClaimedUserIdType.NationalId
+      "passport_number" -> TSClaimedUserIdType.PassportNumber
+      "drivers_license_number" -> TSClaimedUserIdType.DriversLicenseNumber
+      "other" -> TSClaimedUserIdType.Other
       else -> null
     }
   }
@@ -281,7 +251,7 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
 class ActionOptions(
   override val claimUserId: String?,
   override val claimedUserId: String?,
-  override val claimedUserIdType: com.transmit.accountprotection.api.TSClaimedUserIdType?,
+  override val claimedUserIdType: TSClaimedUserIdType?,
   override val correlationId: String?,
   override val referenceUserId: String?
 ) : ActionEventOptions

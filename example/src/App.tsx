@@ -104,11 +104,12 @@ export default class App extends React.Component<Props, State> {
     
     setTimeout(async () => {
       try {
-        // Test getSessionToken after login
-        console.log('[App] Testing getSessionToken after login...');
+        console.log('[App] Testing setAuthenticatedUser after login...');
         await setAuthenticatedUser(username);
-        const sessionToken = await getSessionToken();
-        console.log('[App] getSessionToken() completed successfully:', sessionToken);
+        console.log('[App] setAuthenticatedUser() completed successfully for user:', username);
+        console.log('[App] Testing getSessionToken after login...');
+       // const sessionToken = await getSessionToken();
+       // console.log('[App] getSessionToken() completed successfully:', sessionToken);
       } catch (error) {
         console.error('[App] Error getting session token after login:', error);
       }
@@ -158,10 +159,21 @@ export default class App extends React.Component<Props, State> {
     };
 
     try {
+      // Custom attributes for additional context
+      const customAttributes = {
+        deviceId: 'mobile-app-v1.0',
+        sessionId: Date.now().toString(),
+        userAgent: Platform.OS,
+        appVersion: '1.0.0',
+        transactionCategory: 'money-transfer',
+        riskLevel: 'medium'
+      };
+
       const triggerActionResponse = await triggerAction(
         `${TSAction.transaction}`,
         this.convertMoneyTransferDTOToEventOptions(requestDTO),
-        locationConfig
+        locationConfig,
+        customAttributes
       );
 
       const recommendationResponse = await this.mockServer.fetchRecommendation(triggerActionResponse.actionToken);
@@ -184,14 +196,25 @@ export default class App extends React.Component<Props, State> {
 
   private convertMoneyTransferDTOToEventOptions = (requestDTO: MoneyTransferDTO): TSActionEventOptions => {
     const options: TSActionEventOptions = {
+      correlationId: `transfer-${Date.now()}`,
+      claimedUserId: config.demoUserId,
+      claimedUserIdType: TSClaimedUserIdType.username,
+      referenceUserId: 'demo-reference-user',
       transactionData: {
         amount: parseFloat(requestDTO.amount),
         currency: 'USD',
+        reason: 'Money transfer between users',
+        transactionDate: Date.now(),
         payer: {
-          name: requestDTO.payerName
+          name: requestDTO.payerName,
+          branchIdentifier: 'PAYER_BRANCH_001',
+          accountNumber: '****1234'
         },
         payee: {
-          name: requestDTO.payeeName
+          name: requestDTO.payeeName,
+          bankIdentifier: 'DEMO_BANK_002',
+          branchIdentifier: 'BRANCH_456',
+          accountNumber: '****5678'
         }
       }
     };

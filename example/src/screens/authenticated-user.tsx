@@ -22,8 +22,8 @@ export class AuthenticatedUser extends React.Component<AuthenticatedUserProps, A
         super(props);
         this.state = {
             payerName: props.userId,
-            payeeName: '',
-            amount: '',
+            payeeName: 'Demo Payee',
+            amount: '100.00',
         };
     }
 

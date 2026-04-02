@@ -73,6 +73,7 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
   fun getSessionToken(promise: Promise) {
     if(reactContext.currentActivity != null) {
       TSAccountProtection.getSessionToken(object : ISessionTokenCallback {
+
         override fun onSessionToken(sessionToken: String) {
           promise.resolve(sessionToken)
         }
@@ -87,12 +88,12 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
   }
 
   @ReactMethod
-  fun triggerAction(action: String, options: ReadableMap, locationConfig: ReadableMap?, customAttributes: ReadableMap?, promise: Promise) {
+  fun triggerAction(action: String, options: ReadableMap?, locationConfig: ReadableMap?, customAttributes: ReadableMap?, promise: Promise) {
     if(reactContext.currentActivity != null) {
       Log.d("TS", ">>> triggerAction $action")
 
-      val actionEventOptions = convertOptions(options)
-      val transactionData = convertTransactionData(options)
+      val actionEventOptions = if (options != null) convertOptions(options) else createDefaultOptions()
+      val transactionData = if (options != null) convertTransactionData(options) else createDefaultTransactionData()
       val tsLocationConfig = convertLocationConfig(locationConfig)
       val customAttributesMap = convertCustomAttributes(customAttributes)
 
@@ -199,6 +200,16 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
     )
   }
 
+  private fun createDefaultOptions(): ActionEventOptions {
+    return ActionOptions(
+      correlationId = null,
+      claimUserId = null,
+      claimedUserId = null,
+      claimedUserIdType = null,
+      referenceUserId = null
+    )
+  }
+
   private fun convertStringToClaimedUserIdType(typeString: String?): TSClaimedUserIdType? {
     return when (typeString) {
       "email" -> TSClaimedUserIdType.Email
@@ -244,6 +255,17 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
       if(transactionData?.hasKey("transactionDate") == true) transactionData.getDouble("transactionDate").toLong() else null,
       payee,
       payer
+    )
+  }
+
+  private fun createDefaultTransactionData(): TransactionData {
+    return ActionTransactionData(
+      amount = null,
+      currency = null,
+      reason = null,
+      transactionDate = null,
+      payee = PayeeData(null, null, null, null),
+      payer = PayerData(null, null, null)
     )
   }
 }

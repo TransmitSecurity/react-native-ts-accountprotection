@@ -100,7 +100,7 @@ export function initializeSDKIOS(): Promise<boolean> {
   return TsAccountprotection.initializeSDKIOS();
 }
 
-export function initializeIOS(clientId: string, baseUrl: string | null, configuration?: TSInitSDKConfiguration | null, userId?: string | null): Promise<boolean> {
+export function initializeIOS(clientId: string, baseUrl: string, configuration?: TSInitSDKConfiguration | null, userId?: string | null): Promise<boolean> {
   return TsAccountprotection.initializeIOS(clientId, baseUrl, configuration, userId);
 }
 

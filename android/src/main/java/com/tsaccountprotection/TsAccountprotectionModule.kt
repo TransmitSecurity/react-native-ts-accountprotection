@@ -173,7 +173,11 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
     if (locationConfig == null) return null
 
     val mode = locationConfig.getString("mode")
-    val validFor = if (locationConfig.hasKey("validFor")) locationConfig.getInt("validFor") else 300
+    val validFor = if (locationConfig.hasKey("validFor") && !locationConfig.isNull("validFor")) {
+      locationConfig.getInt("validFor")
+    } else {
+      300
+    }
 
     return when (mode) {
       "disabled" -> TSLocationConfig(TSLocationCollectionMode.Disable)

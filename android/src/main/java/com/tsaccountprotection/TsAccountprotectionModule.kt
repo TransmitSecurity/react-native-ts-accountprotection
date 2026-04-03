@@ -42,7 +42,7 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
   }
 
   @ReactMethod
-  fun initializeIOS(clientId: String, baseUrl: String, promise: Promise) {
+  fun initializeIOS(clientId: String, baseUrl: String, configuration: ReadableMap?, userId: String?, promise: Promise) {
     Log.d("TS", "Do nothing Android TSAccountProtectionSDK is initialized from application onCreate")
     promise.resolve(false)
   }
@@ -118,6 +118,8 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
           }
         }
       )
+    } else {
+      promise.reject("error", "Activity not available")
     }
   }
 
@@ -248,7 +250,7 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
       val data = transactionData.getMap("payer")
       payer = PayerData(
         if(data!!.hasKey("name")) data.getString("name") else null,
-        if(data.hasKey("bankIdentifier")) data.getString("bankIdentifier") else null,
+        if(data.hasKey("branchIdentifier")) data.getString("branchIdentifier") else null,
         if(data.hasKey("accountNumber")) data.getString("accountNumber") else null)
     }
 

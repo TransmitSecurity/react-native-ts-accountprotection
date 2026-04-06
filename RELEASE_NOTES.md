@@ -27,10 +27,12 @@
 - **iOS Location Support**: Added configuration option to enable location data collection during SDK initialization
 - **Location in Actions**: Trigger Action now supports location configuration with modes: `disabled`, `default`, `forceCurrent`, `forceLastKnown`, `lastKnown`
 - **Custom Attributes**: Enhanced event tracking with support for custom attributes in trigger actions
+- **Behavioral Data Collection**: To collect behavioral data from UI elements, developers must add `testID` attributes to trackable elements (buttons, inputs, etc.)
 
 ### ⚠️ Breaking Changes
 - **`baseUrl` is now required** in `initializeIOS()` method
 - **`setUser()` renamed to `setAuthenticatedUser()`** - update your method calls
+- **Behavioral tracking requirement**: UI elements must include `testID` attributes to be tracked for behavioral data
 - Native SDK version updates may require testing existing integrations
 - Some method signatures have been enhanced with additional optional parameters
 

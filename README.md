@@ -119,6 +119,29 @@ componentDidMount(): void {
 
 ## Module API
 
+### Behavioral Data Collection
+
+**Important:** To enable behavioral data collection, add `testID` attributes to UI elements you want to track:
+
+```jsx
+// Example: Add testID to trackable elements
+<TouchableOpacity 
+  testID="login-button"
+  onPress={handleLogin}
+>
+  <Text>Login</Text>
+</TouchableOpacity>
+
+<TextInput
+  testID="username-input"
+  placeholder="Username"
+  value={username}
+  onChangeText={setUsername}
+/>
+```
+
+**Note:** Elements without `testID` attributes will not be included in behavioral data collection.
+
 #### Set UserID after authentication
 ```js
 import { setAuthenticatedUser } from 'react-native-ts-accountprotection';

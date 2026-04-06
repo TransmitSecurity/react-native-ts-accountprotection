@@ -43,7 +43,7 @@ repositories {
 }
 
 dependencies {
-  implementation("com.ts.sdk:accountprotection:2.1.+")
+  implementation("com.ts.sdk:accountprotection:3.0.0")
 }
 ```
 
@@ -54,7 +54,7 @@ First, [update your](https://developer.transmitsecurity.com/guides/risk/quick_st
 ```xml
 <resources>
     <!-- Transmit Security Credentials -->
-    <string name="transmit_security_client_id">"CLIENT_ID"</string>
+    <string name="transmit_security_client_id">CLIENT_ID</string>
     <string name="transmit_security_base_url">https://api.transmitsecurity.io/</string>
 </resources>
 ```
@@ -89,21 +89,28 @@ First, [Create](https://developer.transmitsecurity.com/guides/risk/quick_start_i
 </plist>
 ```
 
-Next initialize the SDK when your app component is ready
+Next initialize the SDK when your app component is ready (choose one of the following options):
+
+**Option 1: Basic initialization (uses TransmitSecurity.plist configuration)**
 ```js
-import { initializeSDKIOS, initializeIOS } from 'react-native-ts-accountprotection';
+import { initializeSDKIOS } from 'react-native-ts-accountprotection';
 
 componentDidMount(): void {
-    // Basic initialization (uses TransmitSecurity.plist configuration)
     await initializeSDKIOS();
-    
-    // OR advanced initialization with parameters and optional userId
+}
+```
+
+**Option 2: Advanced initialization with custom parameters**
+```js
+import { initializeIOS } from 'react-native-ts-accountprotection';
+
+componentDidMount(): void {
     await initializeIOS(
         "your-client-id", 
-        "https://api.transmitsecurity.io", 
+        "https://api.transmitsecurity.io", // Required baseUrl
         {
             enableTrackingBehavioralData: true,
-            enableLocationEvents: false
+            enableLocationEvents: true // Enable location tracking on iOS
         },
         "optional-user-id" // Optional: Set user ID during initialization
     );
@@ -192,11 +199,50 @@ await triggerAction(
 
 The `customAttributes` object can contain any key-value pairs relevant to your risk assessment needs.
 
+**Location Configuration (Optional):**
+The `triggerAction` method accepts an optional `locationConfig` parameter to control location data collection:
+
+```js
+import { triggerAction, TSAction } from 'react-native-ts-accountprotection';
+
+// Example with location configuration
+await triggerAction(
+  TSAction.login,
+  {
+    claimedUserId: "user@example.com",
+    claimedUserIdType: TSClaimedUserIdType.email
+  },
+  { // locationConfig
+    mode: "lastKnown", // Options: "disabled", "default", "forceCurrent", "forceLastKnown", "lastKnown"
+    validFor: 300 // For "lastKnown" mode: return location only if not older than 300 minutes
+  }
+);
+```
+
 #### Clear User ID
 ```js
 import { clearUser } from 'react-native-ts-accountprotection';
 
 await clearUser();
+```
+
+#### Get Session Token
+Retrieve the current session token for the authenticated user:
+```js
+import { getSessionToken } from 'react-native-ts-accountprotection';
+
+const sessionToken = await getSessionToken();
+console.log("Session Token: ", sessionToken);
+```
+
+#### Log Page Load
+Track page navigation events:
+```js
+import { logPageLoad } from 'react-native-ts-accountprotection';
+
+await logPageLoad("login-page");
+await logPageLoad("dashboard");
+await logPageLoad("checkout");
 ```
 
 #### Set Log Level (Optional)

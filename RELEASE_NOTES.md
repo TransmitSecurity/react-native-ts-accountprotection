@@ -1,5 +1,39 @@
 # Release Notes
 
+## Version 1.0.0
+
+### 🚀 Major Release - Native SDK Updates & API Enhancements
+
+### 🔄 Native SDK Updates
+- **Updated Android and iOS native SDKs**: Upgraded TransmitSecurity Account Protection SDK to **3.0.0**
+
+### 🆕 New APIs
+- **Added `getSessionToken()`**: New method to retrieve the current session token
+- **Added `clearUser()`**: New method to clear the currently authenticated user
+- **Added `logPageLoad(pageName: string)`**: New method to log page load events for tracking user navigation
+
+### ✨ Enhanced APIs
+- **Updated `initializeIOS()`**: 
+  - Made `baseUrl` a required parameter (previously optional)
+  - Added support for initialization `configuration` parameter to enable location tracking on iOS
+  - Added support for `userId` parameter during initialization
+- **Enhanced `triggerAction()`**: 
+  - Added support for location configuration via `locationConfig` parameter
+  - Added support for `customAttributes` parameter for additional event data
+  - Updated API signature for improved flexibility
+- **Renamed `setUser()` to `setAuthenticatedUser()`**: Method renamed for better clarity and consistency
+
+### 🛠️ Configuration Enhancements
+- **iOS Location Support**: Added configuration option to enable location data collection during SDK initialization
+- **Location in Actions**: Trigger Action now supports location configuration with modes: `disabled`, `default`, `forceCurrent`, `forceLastKnown`, `lastKnown`
+- **Custom Attributes**: Enhanced event tracking with support for custom attributes in trigger actions
+
+### ⚠️ Breaking Changes
+- **`baseUrl` is now required** in `initializeIOS()` method
+- **`setUser()` renamed to `setAuthenticatedUser()`** - update your method calls
+- Native SDK version updates may require testing existing integrations
+- Some method signatures have been enhanced with additional optional parameters
+
 ## Version 0.2.1
 
 ### 🐛 Bug Fixes

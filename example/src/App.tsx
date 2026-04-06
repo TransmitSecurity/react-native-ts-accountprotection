@@ -108,8 +108,8 @@ export default class App extends React.Component<Props, State> {
         await setAuthenticatedUser(username);
         console.log('[App] setAuthenticatedUser() completed successfully for user:', username);
         console.log('[App] Testing getSessionToken after login...');
-       // const sessionToken = await getSessionToken();
-       // console.log('[App] getSessionToken() completed successfully:', sessionToken);
+        const sessionToken = await getSessionToken();
+        console.log('[App] getSessionToken() completed successfully:', sessionToken);
       } catch (error) {
         console.error('[App] Error getting session token after login:', error);
       }

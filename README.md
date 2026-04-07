@@ -55,7 +55,7 @@ First, [update your](https://developer.transmitsecurity.com/guides/risk/quick_st
 <resources>
     <!-- Transmit Security Credentials -->
     <string name="transmit_security_client_id">CLIENT_ID</string>
-    <string name="transmit_security_base_url">https://api.transmitsecurity.io/</string>
+    <string name="transmit_security_base_url">https://api.transmitsecurity.io/risk-collect/</string>
 </resources>
 ```
 
@@ -81,7 +81,7 @@ First, [Create](https://developer.transmitsecurity.com/guides/risk/quick_start_i
 	<key>credentials</key>
 	<dict>
 		<key>baseUrl</key>
-		<string>https://api.transmitsecurity.io/</string>
+		<string>https://api.transmitsecurity.io/risk-collect/</string>
 		<key>clientId</key>
 		<string>[CLIENT_ID]</string>
 	</dict>
@@ -107,7 +107,7 @@ import { initializeIOS } from 'react-native-ts-accountprotection';
 componentDidMount(): void {
     await initializeIOS(
         "your-client-id", 
-        "https://api.transmitsecurity.io", // Required baseUrl
+        "https://api.transmitsecurity.io/risk-collect/", // ⚠️ CRITICAL: Must include /risk-collect/ postfix
         {
             enableTrackingBehavioralData: true,
             enableLocationEvents: true // Enable location tracking on iOS
@@ -116,6 +116,8 @@ componentDidMount(): void {
     );
 }
 ```
+
+> **⚠️ IMPORTANT:** The `baseUrl` must include the `/risk-collect/` postfix (e.g., `https://api.transmitsecurity.io/risk-collect/`) or the server connection will fail.
 
 ## Module API
 

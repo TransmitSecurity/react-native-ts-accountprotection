@@ -32,6 +32,7 @@
 ### ⚠️ Breaking Changes
 - **`baseUrl` is now required** in `initializeIOS()` method
 - **`setUser()` renamed to `setAuthenticatedUser()`** - update your method calls
+- **⚠️ CRITICAL: baseUrl must include `/risk-collect/` postfix** - e.g., `https://api.transmitsecurity.io/risk-collect/` (server connection will fail without this)
 - **Behavioral tracking requirement**: UI elements must include `testID` attributes to be tracked for behavioral data
 - Native SDK version updates may require testing existing integrations
 - Some method signatures have been enhanced with additional optional parameters

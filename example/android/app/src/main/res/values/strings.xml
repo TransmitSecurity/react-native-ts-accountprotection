@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">TsAccountprotectionExample</string>
   <string name="transmit_security_client_id">REPLACE_WITH_CLIENT_ID</string>
-  <string name="transmit_security_base_url">https://api.transmitsecurity.io/</string>
+  <string name="transmit_security_base_url">https://api.transmitsecurity.io/risk-collect/</string>
 </resources>

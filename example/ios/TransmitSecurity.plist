@@ -5,7 +5,7 @@
 	<key>credentials</key>
 	<dict>
 		<key>baseUrl</key>
-		<string>https://api.transmitsecurity.io/</string>
+		<string>https://api.transmitsecurity.io/risk-collect/</string>
 		<key>clientId</key>
 		<string>YOUR_CLIENT_ID</string>
 	</dict>

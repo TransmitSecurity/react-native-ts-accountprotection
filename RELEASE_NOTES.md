@@ -1,6 +1,6 @@
 # Release Notes
 
-## Version 1.0.0
+## Version 3.0.0
 
 ### 🚀 Major Release - Native SDK Updates & API Enhancements
 

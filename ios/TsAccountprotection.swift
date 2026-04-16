@@ -137,8 +137,13 @@ class TsAccountprotection: NSObject {
     func getSessionToken(
         _ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
             runBlockOnMain {
-                TSAccountProtection.getSessionToken { results in
-                    self.runBlockOnMain {
+                TSAccountProtection.getSessionToken { [weak self] results in
+                  guard let self = self else {
+                    reject("InternalError", "Self deallocated", nil)
+                    return
+                  }
+                  
+                  self.runBlockOnMain {
                         switch results {
                         case .success(let sessionToken):
                             resolve(sessionToken)

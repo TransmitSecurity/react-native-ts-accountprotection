@@ -126,6 +126,6 @@ repositories {
 }
 
 dependencies {
-  implementation("com.ts.sdk:accountprotection:2.1.+")
+  implementation("com.ts.sdk:accountprotection:3.0.0")
 }
 

@@ -4,12 +4,17 @@ import { SafeAreaView, Keyboard, Alert, Platform } from 'react-native';
 
 import { 
   initializeSDKIOS,
-  setUserId,
+  initializeIOS,
+  setAuthenticatedUser,
   setLogLevel,
   clearUser, 
+  getSessionToken,
   triggerAction, 
   TSAction, 
-  type TSActionEventOptions 
+  TSClaimedUserIdType,
+  type TSActionEventOptions, 
+  type TSLocationConfig,
+  logPageLoad
 } from 'react-native-ts-accountprotection';
 import MockServer from './mock-server';
 
@@ -80,7 +85,11 @@ export default class App extends React.Component<Props, State> {
   private onAppReady = async (): Promise<void> => {
     // this is for iOS only, Android TSAccountProtectionSDK is initialized from application onCreate.
     if (Platform.OS === 'ios') {
-      await initializeSDKIOS();
+      await initializeIOS(config.clientId, config.baseUrl, {
+        enableTrackingBehavioralData: true,
+        enableLocationEvents: true
+      });
+      // await initializeSDKIOS();
     }
 
     const isLogEnabled = true;
@@ -92,9 +101,19 @@ export default class App extends React.Component<Props, State> {
   private handleLogin = async (username: string, password: string) => {
     Keyboard.dismiss()
     this.setState({ isLoading: true });
-    await setUserId(username);
-
+    
     setTimeout(async () => {
+      try {
+        console.log('[App] Testing setAuthenticatedUser after login...');
+        await setAuthenticatedUser(username);
+        console.log('[App] setAuthenticatedUser() completed successfully for user:', username);
+        console.log('[App] Testing getSessionToken after login...');
+        const sessionToken = await getSessionToken();
+        console.log('[App] getSessionToken() completed successfully:', sessionToken);
+      } catch (error) {
+        console.error('[App] Error getting session token after login:', error);
+      }
+      
       this.navigateToAuthenticatedUserScreen();
     }, 1500);
   };
@@ -104,6 +123,7 @@ export default class App extends React.Component<Props, State> {
       isLoading: false,
       currentScreen: AppScreen.AuthenticatedUser
     });
+    logPageLoad('AuthenticatedUserScreen');
   }
 
   // Logout, Clear User
@@ -111,11 +131,20 @@ export default class App extends React.Component<Props, State> {
   private onLogout = async () => {
     Keyboard.dismiss()
     this.setState({ isLoading: true });
-    await clearUser();
+    
+    try {
+      const clearResult = await clearUser();
+      console.log('[App] clearUser() completed successfully:', clearResult);
+    } catch (error) {
+      console.error('[App] Error during logout process:', error);
+    }
+    
+    console.log('[App] Logout process completed, returning to login screen');
     this.setState({
       isLoading: false,
       currentScreen: AppScreen.Login
     });
+    logPageLoad('LoginScreen');
   }
 
   // Money Transfer
@@ -124,10 +153,27 @@ export default class App extends React.Component<Props, State> {
     Keyboard.dismiss()
     this.setState({ isLoading: true });
 
+    const locationConfig: TSLocationConfig = {
+      mode: 'lastKnown' as const,
+      validFor: 300
+    };
+
     try {
+      // Custom attributes for additional context
+      const customAttributes = {
+        deviceId: 'mobile-app-v1.0',
+        sessionId: Date.now().toString(),
+        userAgent: Platform.OS,
+        appVersion: '1.0.0',
+        transactionCategory: 'money-transfer',
+        riskLevel: 'medium'
+      };
+
       const triggerActionResponse = await triggerAction(
         `${TSAction.transaction}`,
-        this.convertMoneyTransferDTOToEventOptions(requestDTO)
+        this.convertMoneyTransferDTOToEventOptions(requestDTO),
+        locationConfig,
+        customAttributes
       );
 
       const recommendationResponse = await this.mockServer.fetchRecommendation(triggerActionResponse.actionToken);
@@ -148,30 +194,27 @@ export default class App extends React.Component<Props, State> {
     }
   }
 
-  private handleTriggerActionLoginExample = async () => {
-    const triggerActionResponse = await triggerAction(
-      TSAction.login,
-      {
-        correlationId: "CORRELATION_ID",
-        claimUserId: "CLAIM_USER_ID",
-        referenceUserId: "REFERENCE_USER_ID",
-        transactionData: undefined
-      }
-    )
-    const actionToken = triggerActionResponse.actionToken;
-    console.log("Action Token: ", actionToken);
-  }
-
   private convertMoneyTransferDTOToEventOptions = (requestDTO: MoneyTransferDTO): TSActionEventOptions => {
     const options: TSActionEventOptions = {
+      correlationId: `transfer-${Date.now()}`,
+      claimedUserId: config.demoUserId,
+      claimedUserIdType: TSClaimedUserIdType.username,
+      referenceUserId: 'demo-reference-user',
       transactionData: {
         amount: parseFloat(requestDTO.amount),
         currency: 'USD',
+        reason: 'Money transfer between users',
+        transactionDate: Date.now(),
         payer: {
-          name: requestDTO.payerName
+          name: requestDTO.payerName,
+          branchIdentifier: 'PAYER_BRANCH_001',
+          accountNumber: '****1234'
         },
         payee: {
-          name: requestDTO.payeeName
+          name: requestDTO.payeeName,
+          bankIdentifier: 'DEMO_BANK_002',
+          branchIdentifier: 'BRANCH_456',
+          accountNumber: '****5678'
         }
       }
     };

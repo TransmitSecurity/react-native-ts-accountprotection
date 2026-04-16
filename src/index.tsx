@@ -42,7 +42,10 @@ export interface TSTransactionData {
 
 export interface TSActionEventOptions {
   correlationId?: string;
+  /** @deprecated Use claimedUserId instead */
   claimUserId?: string;
+  claimedUserId?: string;
+  claimedUserIdType?: TSClaimedUserIdType;
   referenceUserId?: string;
   transactionData?: TSTransactionData;
 }
@@ -66,27 +69,61 @@ export const enum TSAction {
   credits_change = 'credits_change',
 }
 
+export const enum TSClaimedUserIdType {
+  email = 'email',
+  username = 'username',
+  phoneNumber = 'phone_number',
+  accountId = 'account_id',
+  ssn = 'ssn',
+  nationalId = 'national_id',
+  passportNumber = 'passport_number',
+  driversLicenseNumber = 'drivers_license_number',
+  other = 'other',
+}
+
+export interface TSLocationConfig {
+  mode: 'disabled' | 'default' | 'forceCurrent' | 'forceLastKnown' | 'lastKnown';
+  validFor?: number | null | undefined; // return last-known only if it is not older than `validFor` minutes.
+}
+
+export interface TSInitSDKConfiguration {
+  enableTrackingBehavioralData?: boolean;
+  enableLocationEvents?: boolean;
+}
+
+export interface TSAuthenticatedUserOptions {
+  [key: string]: any;
+}
+
 // SDK Functions - Direct exports of the native module methods
 export function initializeSDKIOS(): Promise<boolean> {
   return TsAccountprotection.initializeSDKIOS();
 }
 
-export function initializeIOS(clientId: string, baseUrl?: string | null): Promise<boolean> {
-  return TsAccountprotection.initializeIOS(clientId, baseUrl);
+export function initializeIOS(clientId: string, baseUrl: string, configuration?: TSInitSDKConfiguration | null, userId?: string | null): Promise<boolean> {
+  return TsAccountprotection.initializeIOS(clientId, baseUrl, configuration, userId);
 }
 
-export function setUserId(userId: string): Promise<boolean> {
-  return TsAccountprotection.setUserId(userId);
+export function setAuthenticatedUser(userId: string, options?: TSAuthenticatedUserOptions): Promise<boolean> {
+  return TsAccountprotection.setAuthenticatedUser(userId, options);
 }
 
-export function triggerAction(action: string, options?: TSActionEventOptions): Promise<TSSetActionResponse> {
-  return TsAccountprotection.triggerAction(action, options);
+export function triggerAction(action: string, options?: TSActionEventOptions, locationConfig?: TSLocationConfig, customAttributes?: {[key: string]: any}): Promise<TSSetActionResponse> {
+  return TsAccountprotection.triggerAction(action, options, locationConfig, customAttributes);
 }
 
 export function clearUser(): Promise<boolean> {
   return TsAccountprotection.clearUser();
 }
 
+export function getSessionToken(): Promise<string> {
+  return TsAccountprotection.getSessionToken();
+}
+
 export function setLogLevel(isLogEnabled: boolean): Promise<boolean> {
   return TsAccountprotection.setLogLevel(isLogEnabled);
+}
+
+export function logPageLoad(pageName: string): Promise<boolean> {
+  return TsAccountprotection.logPageLoad(pageName);
 }

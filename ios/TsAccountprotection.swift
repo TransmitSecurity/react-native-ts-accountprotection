@@ -2,9 +2,7 @@ import AccountProtection
 
 @objc(TsAccountprotection)
 class TsAccountprotection: NSObject {
-    
-    private let kTag = "TSAccountprotection"
-    
+        
     @objc(initializeSDKIOS:withRejecter:)
     func initializeSDKIOS(
         _ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
@@ -13,78 +11,118 @@ class TsAccountprotection: NSObject {
                     try TSAccountProtection.initializeSDK()
                     resolve(true)
                 } catch {
-                    reject("TsAccountprotectionModule", "Error when calling initializeSDKIOS", error)
+                    reject("TSAccountprotection", "Error when calling initializeSDKIOS", error)
                 }
             }
         }
     
-    @objc(initializeIOS:baseUrl:withResolver:withRejecter:)
-    func initializeIOS(
-      _ clientId: String, baseUrl: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
-            runBlockOnMain {
-                if baseUrl.isEmpty {
-                    TSAccountProtection.initialize(clientId: clientId)
-                } else {
-                    TSAccountProtection.initialize(baseUrl: baseUrl, clientId: clientId)
-                }
-                
-                resolve(true)
-            }
-        }
-    
-    @objc(setUserId:withResolver:withRejecter:)
-    func setUserId(userId: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
-        guard !userId.isEmpty else {
-            reject("Invalid params provided to .setUserId", nil, nil)
-            return
+  @objc(initializeIOS:baseUrl:configuration:userId:withResolver:withRejecter:)
+  func initializeIOS(
+    _ clientId: String,
+    baseUrl: String,
+    configuration: [String: Any]?,
+    userId: String?,
+    resolve: @escaping RCTPromiseResolveBlock,
+    reject: @escaping RCTPromiseRejectBlock) -> Void {
+      runBlockOnMain {
+        var nativeConfiguration: AccountProtection.TSInitSDKConfiguration?
+        
+        if let config = configuration {
+          let enableTrackingBehavioralData = config["enableTrackingBehavioralData"] as? Bool
+          let enableLocationEvents = config["enableLocationEvents"] as? Bool
+          
+          nativeConfiguration = TSInitSDKConfiguration(
+            enableTrackingBehavioralData: enableTrackingBehavioralData ?? true,
+            enableLocationEvents: enableLocationEvents ?? false
+          )
         }
         
-        runBlockOnMain {
-            TSAccountProtection.setUserId(userId)
-            resolve(true)
-        }
+        TSAccountProtection.initialize(baseUrl: baseUrl, clientId: clientId, userId: userId, configuration: nativeConfiguration)
+        
+        resolve(true)
+      }
     }
     
-    @objc(triggerAction:options:withResolver:withRejecter:)
-    func triggerAction(action: String, options: [String: Any]? = nil, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+  @objc(setAuthenticatedUser:options:withResolver:withRejecter:)
+  func setAuthenticatedUser(userId: String, options: [String: Any]? = nil, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+    guard !userId.isEmpty else {
+      reject("Invalid params provided to setAuthenticatedUser", nil, nil)
+      return
+    }
+    
+    runBlockOnMain {
+      TSAccountProtection.setAuthenticatedUser(userId, options: options)
+      resolve(true)
+    }
+  }
+    
+  @objc(triggerAction:options:locationConfig:customAttributes:withResolver:withRejecter:)
+  func triggerAction(
+    action: String,
+    options: [String: Any]? = nil,
+    locationConfig: [String: Any]? = nil,
+    customAttributes: [String: Any]? = nil,
+    resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+    
+    runBlockOnMain { [weak self] in
+      
+      var transactionOptions: AccountProtection.TSActionEventOptions? = nil
+      if let options = options {
+        transactionOptions = self?.convertTransactionOptions(options)
+        if transactionOptions == nil {
+          reject("Invalid options provided to triggerAction", nil, nil)
+          return
+        }
+      }
+      
+      var nativeLocationConfig: AccountProtection.TSLocationConfig?
+      
+      if let locationConfig = locationConfig,
+         let mode = locationConfig["mode"] as? String {
         
-        runBlockOnMain { [weak self] in
-            
-            var transactionOptions: AccountProtection.TSActionEventOptions? = nil
-            if let options = options {
-                transactionOptions = self?.convertTransactionOptions(options)
-                if transactionOptions == nil {
-                    reject("Invalid options provided to triggerAction", nil, nil)
-                    return
-                }
+        let validFor = locationConfig["validFor"] as? Int ?? 300
+        
+        switch mode {
+        case "disabled": nativeLocationConfig = .init(mode: .disabled)
+        case "default": nativeLocationConfig = .init(mode: .default)
+        case "forceCurrent": nativeLocationConfig = .init(mode: .forceCurrent)
+        case "forceLastKnown": nativeLocationConfig = .init(mode: .forceLastKnown)
+        case "lastKnown": nativeLocationConfig = .init(mode: .lastKnown(validFor: validFor))
+        default: nativeLocationConfig = .init(mode: .default)
+        }
+      }
+      
+      TSAccountProtection.triggerAction(
+        action,
+        customAttributes: customAttributes,
+        options: transactionOptions,
+        locationConfig: nativeLocationConfig
+      ) { results in
+          self?.runBlockOnMain {
+            switch results {
+            case .success(let response):
+              let actionToken: String = response.actionToken
+              resolve(["success": true, "actionToken": actionToken])
+            case .failure(let error):
+              switch error {
+              case .disabled:
+                reject("disabled", nil, nil)
+              case .connectionError:
+                reject("connectionError", nil, nil)
+              case .internalError:
+                reject("internalError", nil, nil)
+              case .notSupportedActionError:
+                reject("notSupportedActionError", nil, nil)
+              case .initializationError:
+                reject("initializationError", nil, nil)
+              @unknown default:
+                reject("unknown", nil, nil)
+              }
             }
-            
-            TSAccountProtection.triggerAction(action, options: transactionOptions) { results in
-                self?.runBlockOnMain {
-                    switch results {
-                    case .success(let response):
-                        let actionToken: String = response.actionToken
-                        resolve(["success": true, "actionToken": actionToken])
-                    case .failure(let error):
-                        switch error {
-                        case .disabled:
-                            reject("disabled", nil, nil)
-                        case .connectionError:
-                            reject("connectionError", nil, nil)
-                        case .internalError:
-                            reject("internalError", nil, nil)
-                        case .notSupportedActionError:
-                            reject("notSupportedActionError", nil, nil)
-                        case .initializationError:
-                            reject("initializationError", nil, nil)
-                        @unknown default:
-                            reject("unknown", nil, nil)
-                        }
-                    }
-                }
-            }
+          }
         }
     }
+  }
     
     @objc(clearUser:withRejecter:)
     func clearUser(
@@ -94,14 +132,63 @@ class TsAccountprotection: NSObject {
                 resolve(true)
             }
         }
+    
+    @objc(getSessionToken:withRejecter:)
+    func getSessionToken(
+        _ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
+            runBlockOnMain {
+                TSAccountProtection.getSessionToken { [weak self] results in
+                  guard let self = self else {
+                    reject("InternalError", "Self deallocated", nil)
+                    return
+                  }
+                  
+                  self.runBlockOnMain {
+                        switch results {
+                        case .success(let sessionToken):
+                            resolve(sessionToken)
+                        case .failure(let error):
+                            switch error {
+                            case .disabled:
+                                reject("disabled", "SDK is disabled", nil)
+                            case .connectionError:
+                                reject("connectionError", "Connection error occurred", nil)
+                            case .internalError:
+                                reject("internalError", "Internal error occurred", nil)
+                            case .notSupportedActionError:
+                                reject("notSupportedActionError", "Action not supported", nil)
+                            case .initializationError:
+                                reject("initializationError", "SDK not initialized", nil)
+                            @unknown default:
+                                reject("unknown", "Unknown error occurred", nil)
+                            }
+                        }
+                    }
+                }
+            }
+        }
   
   @objc(setLogLevel:withResolver:withRejecter:)
   func setLogLevel(_ logIsEnabled: Bool,
-                   resolver: @escaping RCTPromiseResolveBlock,
+                   resolve: @escaping RCTPromiseResolveBlock,
                    rejecter: @escaping RCTPromiseRejectBlock) -> Void {
     runBlockOnMain {
       TSAccountProtection.setLogLevel(logIsEnabled ? .debug : .off)
-      resolver(true)
+      resolve(true)
+    }
+  }
+  
+  @objc(logPageLoad:withResolver:withRejecter:)
+  func logPageLoad(_ pageName: String,
+                   resolve: @escaping RCTPromiseResolveBlock,
+                   reject: @escaping RCTPromiseRejectBlock) -> Void {
+    runBlockOnMain {
+      do {
+        try TSAccountProtection.logPageLoad(pageName)
+        resolve(true)
+      } catch {
+        reject("logPageLoad Error", error.localizedDescription, nil)
+      }
     }
   }
     
@@ -112,17 +199,43 @@ class TsAccountprotection: NSObject {
         
         let correlationId = options["correlationId"] as? String
         let claimUserId = options["claimUserId"] as? String
+        let claimedUserId = options["claimedUserId"] as? String
+        let claimedUserIdTypeString = options["claimedUserIdType"] as? String
         let referenceUserId = options["referenceUserId"] as? String
         let transactionData = convertTransactionDataFromOptions(options)
         
+        var claimedUserIdType: AccountProtection.TSClaimedUserIdType?
+        if let typeString = claimedUserIdTypeString {
+            claimedUserIdType = convertStringToClaimedUserIdType(typeString)
+        }
+        
+        // claimUserId is now deprecated, if the new `claimedUserId` is not provided, fallback to `claimUserId`
+        let finalClaimedUserId = claimedUserId ?? claimUserId
+        
         let options = TSActionEventOptions(
             correlationId: correlationId,
-            claimUserId: claimUserId,
+            claimedUserId: finalClaimedUserId,
             referenceUserId: referenceUserId,
-            transactionData: transactionData
+            transactionData: transactionData,
+            claimedUserIdType: claimedUserIdType
         )
         
         return options
+    }
+    
+    private func convertStringToClaimedUserIdType(_ typeString: String) -> AccountProtection.TSClaimedUserIdType? {
+        switch typeString {
+        case "email": return .email
+        case "username": return .username
+        case "phone_number": return .phoneNumber
+        case "account_id": return .accountId
+        case "ssn": return .ssn
+        case "national_id": return .nationalId
+        case "passport_number": return .passportNumber
+        case "drivers_license_number": return .driversLicenseNumber
+        case "other": return .other
+        default: return nil
+        }
     }
     
     private func doMandatoryOptionsExist(_ options: [String: Any]) -> Bool {

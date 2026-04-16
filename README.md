@@ -43,7 +43,7 @@ repositories {
 }
 
 dependencies {
-  implementation("com.ts.sdk:accountprotection:2.1.+")
+  implementation("com.ts.sdk:accountprotection:3.0.0")
 }
 ```
 
@@ -54,8 +54,8 @@ First, [update your](https://developer.transmitsecurity.com/guides/risk/quick_st
 ```xml
 <resources>
     <!-- Transmit Security Credentials -->
-    <string name="transmit_security_client_id">"CLIENT_ID"</string>
-    <string name="transmit_security_base_url">https://api.transmitsecurity.io/</string>
+    <string name="transmit_security_client_id">CLIENT_ID</string>
+    <string name="transmit_security_base_url">https://api.transmitsecurity.io/risk-collect/</string>
 </resources>
 ```
 
@@ -81,7 +81,7 @@ First, [Create](https://developer.transmitsecurity.com/guides/risk/quick_start_i
 	<key>credentials</key>
 	<dict>
 		<key>baseUrl</key>
-		<string>https://api.transmitsecurity.io/</string>
+		<string>https://api.transmitsecurity.io/risk-collect/</string>
 		<key>clientId</key>
 		<string>[CLIENT_ID]</string>
 	</dict>
@@ -89,37 +89,95 @@ First, [Create](https://developer.transmitsecurity.com/guides/risk/quick_start_i
 </plist>
 ```
 
-Next initialize the SDK when your app component is ready
+Next initialize the SDK when your app component is ready (choose one of the following options):
+
+**Option 1: Basic initialization (uses TransmitSecurity.plist configuration)**
 ```js
 import { initializeSDKIOS } from 'react-native-ts-accountprotection';
 
 componentDidMount(): void {
-    // Setup the module as soon your component is ready
     await initializeSDKIOS();
 }
 ```
 
+**Option 2: Advanced initialization with custom parameters**
+```js
+import { initializeIOS } from 'react-native-ts-accountprotection';
+
+componentDidMount(): void {
+    await initializeIOS(
+        "your-client-id", 
+        "https://api.transmitsecurity.io/risk-collect/", // ⚠️ CRITICAL: Must include /risk-collect/ postfix
+        {
+            enableTrackingBehavioralData: true,
+            enableLocationEvents: true // Enable location tracking on iOS
+        },
+        "optional-user-id" // Optional: Set user ID during initialization
+    );
+}
+```
+
+> **⚠️ IMPORTANT:** The `baseUrl` must include the `/risk-collect/` postfix (e.g., `https://api.transmitsecurity.io/risk-collect/`) or the server connection will fail.
+
 ## Module API
+
+### Behavioral Data Collection
+
+**Important:** To enable behavioral data collection, add `testID` attributes to UI elements you want to track:
+
+```jsx
+// Example: Add testID to trackable elements
+<TouchableOpacity 
+  testID="login-button"
+  onPress={handleLogin}
+>
+  <Text>Login</Text>
+</TouchableOpacity>
+
+<TextInput
+  testID="username-input"
+  placeholder="Username"
+  value={username}
+  onChangeText={setUsername}
+/>
+```
+
+**Note:** Elements without `testID` attributes will not be included in behavioral data collection.
 
 #### Set UserID after authentication
 ```js
-import { setUserId } from 'react-native-ts-accountprotection';
+import { setAuthenticatedUser } from 'react-native-ts-accountprotection';
 
-await setUserId(username);
+// Basic usage
+await setAuthenticatedUser(username);
+
+// With optional parameters
+await setAuthenticatedUser(username, { 
+  customProperty: 'value',
+  additionalData: 123 
+});
 ```
 
 #### Trigger Action
 ```js
-import { triggerAction, TSAction } from 'react-native-ts-accountprotection';
+import { triggerAction, TSAction, TSClaimedUserIdType } from 'react-native-ts-accountprotection';
 
 private handleTriggerActionLoginExample = async () => {
   const triggerActionResponse = await triggerAction(
     TSAction.login,
     { 
       correlationId: "CORRELATION_ID", 
-      claimUserId: "CLAIM_USER_ID", 
+      claimUserId: "CLAIM_USER_ID", // @deprecated - use claimedUserId instead
+      claimedUserId: "user@example.com",
+      claimedUserIdType: TSClaimedUserIdType.email,
       referenceUserId: "REFERENCE_USER_ID", 
       transactionData: undefined
+    },
+    undefined, // locationConfig (optional)
+    { // customAttributes (optional)
+      userLevel: "premium",
+      sessionId: "sess_12345",
+      deviceFingerprint: "fp_abcdef"
     }
   )
   const actionToken = triggerActionResponse.actionToken;
@@ -127,11 +185,89 @@ private handleTriggerActionLoginExample = async () => {
 }
 ```
 
+**Available TSClaimedUserIdType options:**
+- `TSClaimedUserIdType.email` - Email address
+- `TSClaimedUserIdType.username` - Username
+- `TSClaimedUserIdType.phoneNumber` - Phone number
+- `TSClaimedUserIdType.accountId` - Account ID
+- `TSClaimedUserIdType.ssn` - Social Security Number
+- `TSClaimedUserIdType.nationalId` - National ID
+- `TSClaimedUserIdType.passportNumber` - Passport number
+- `TSClaimedUserIdType.driversLicenseNumber` - Driver's license number
+- `TSClaimedUserIdType.other` - Other identifier type
+
+**Custom Attributes (Optional):**
+The `triggerAction` method accepts an optional `customAttributes` parameter that allows you to pass additional contextual data:
+
+```js
+// Example with custom attributes
+await triggerAction(
+  TSAction.transaction,
+  {
+    claimedUserId: "user@example.com",
+    claimedUserIdType: TSClaimedUserIdType.email,
+    transactionData: {
+      amount: 100.00,
+      currency: "USD"
+    }
+  },
+  undefined, // locationConfig
+  { // customAttributes
+    userLevel: "premium",
+    deviceType: "mobile",
+    sessionDuration: 1800,
+    previousTransactionCount: 5,
+    riskScore: 0.2
+  }
+);
+```
+
+The `customAttributes` object can contain any key-value pairs relevant to your risk assessment needs.
+
+**Location Configuration (Optional):**
+The `triggerAction` method accepts an optional `locationConfig` parameter to control location data collection:
+
+```js
+import { triggerAction, TSAction } from 'react-native-ts-accountprotection';
+
+// Example with location configuration
+await triggerAction(
+  TSAction.login,
+  {
+    claimedUserId: "user@example.com",
+    claimedUserIdType: TSClaimedUserIdType.email
+  },
+  { // locationConfig
+    mode: "lastKnown", // Options: "disabled", "default", "forceCurrent", "forceLastKnown", "lastKnown"
+    validFor: 300 // For "lastKnown" mode: return location only if not older than 300 minutes
+  }
+);
+```
+
 #### Clear User ID
 ```js
 import { clearUser } from 'react-native-ts-accountprotection';
 
 await clearUser();
+```
+
+#### Get Session Token
+Retrieve the current session token for the authenticated user:
+```js
+import { getSessionToken } from 'react-native-ts-accountprotection';
+
+const sessionToken = await getSessionToken();
+console.log("Session Token: ", sessionToken);
+```
+
+#### Log Page Load
+Track page navigation events:
+```js
+import { logPageLoad } from 'react-native-ts-accountprotection';
+
+await logPageLoad("login-page");
+await logPageLoad("dashboard");
+await logPageLoad("checkout");
 ```
 
 #### Set Log Level (Optional)

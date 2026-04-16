@@ -13,12 +13,14 @@ import TSAccountProtectionSDKModule, { TSAccountProtectionSDK } from 'react-nati
 ```js
 import { 
   initializeSDKIOS, 
-  setUserId, 
+  setAuthenticatedUser, 
   triggerAction, 
   clearUser, 
   setLogLevel, 
   TSAction,
-  type TSActionEventOptions 
+  TSClaimedUserIdType,
+  type TSActionEventOptions,
+  type TSAuthenticatedUserOptions
 } from 'react-native-ts-accountprotection';
 ```
 
@@ -27,7 +29,8 @@ import {
 | Function | Before | After |
 |----------|--------|-------|
 | Initialize iOS | `TSAccountProtectionSDKModule.initializeSDKIOS()` | `initializeSDKIOS()` |
-| Set User ID | `TSAccountProtectionSDKModule.setUserId(id)` | `setUserId(id)` |
+| Initialize iOS (Advanced) | *Not available* | `initializeIOS(clientId, baseUrl, config?, userId?)` |
+| Set User ID | `TSAccountProtectionSDKModule.setUserId(id)` | `setAuthenticatedUser(id, options?)` |
 | Trigger Action | `TSAccountProtectionSDKModule.triggerAction(...)` | `triggerAction(...)` |
 | Clear User | `TSAccountProtectionSDKModule.clearUser()` | `clearUser()` |
 | Set Log Level | `TSAccountProtectionSDKModule.setLogLevel(...)` | `setLogLevel(...)` |
@@ -39,6 +42,85 @@ import {
 | Actions | `TSAccountProtectionSDK.TSAction.login` | `TSAction.login` |
 | Event Options | `TSAccountProtectionSDK.TSActionEventOptions` | `TSActionEventOptions` |
 | Response | `TSAccountProtectionSDK.TSSetActionResponse` | `TSSetActionResponse` |
+
+## Trigger Action API Changes
+
+### TSActionEventOptions Updates
+
+The `claimUserId` field has been **deprecated** in favor of new fields:
+
+**Before (still works but deprecated):**
+```js
+const options = {
+  claimUserId: "user123",
+  correlationId: "correlation-123"
+}
+```
+
+**After (recommended):**
+```js
+import { TSClaimedUserIdType } from 'react-native-ts-accountprotection';
+
+const options = {
+  claimedUserId: "user@example.com",
+  claimedUserIdType: TSClaimedUserIdType.email,
+  correlationId: "correlation-123"
+}
+```
+
+**Available TSClaimedUserIdType values:**
+- `TSClaimedUserIdType.email`
+- `TSClaimedUserIdType.username`
+- `TSClaimedUserIdType.phoneNumber`
+- `TSClaimedUserIdType.accountId`
+- `TSClaimedUserIdType.ssn`
+- `TSClaimedUserIdType.nationalId`
+- `TSClaimedUserIdType.passportNumber`
+- `TSClaimedUserIdType.driversLicenseNumber`
+- `TSClaimedUserIdType.other`
+const options = {
+  claimUserId: "user123", // @deprecated - still works for backward compatibility
+  claimedUserId: "user@example.com", // NEW - preferred field
+  claimedUserIdType: TSClaimedUserIdType.email, // NEW - specifies identifier type
+  correlationId: "correlation-123"
+}
+```
+
+### New TSClaimedUserIdType Enum
+
+Available values:
+- `TSClaimedUserIdType.email`
+- `TSClaimedUserIdType.username`
+- `TSClaimedUserIdType.phoneNumber`
+- `TSClaimedUserIdType.accountId`
+- `TSClaimedUserIdType.ssn`
+- `TSClaimedUserIdType.nationalId`
+- `TSClaimedUserIdType.passportNumber`
+- `TSClaimedUserIdType.driversLicenseNumber`
+- `TSClaimedUserIdType.other`
+
+## iOS Initialization Enhancements
+
+The `initializeIOS` method now supports an optional `userId` parameter for setting the user ID during initialization:
+
+**Before (still works):**
+```js
+await initializeSDKIOS(); // Uses TransmitSecurity.plist configuration
+```
+
+**New Advanced Initialization:**
+```js
+// Initialize with specific parameters and optional userId
+await initializeIOS(
+  "your-client-id",
+  "https://api.transmitsecurity.io", 
+  {
+    enableTrackingBehavioralData: true,
+    enableLocationEvents: false
+  },
+  "user-id-123" // Optional: Set user ID during initialization
+);
+```
 
 ## Quick Migration Steps
 

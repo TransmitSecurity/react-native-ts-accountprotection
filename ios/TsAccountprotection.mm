@@ -3,13 +3,16 @@
 @interface RCT_EXTERN_MODULE(TsAccountprotection, NSObject)
 
 RCT_EXTERN_METHOD(initializeSDKIOS:(RCTPromiseResolveBlock)resolve withRejecter:(RCTPromiseRejectBlock)reject)
-RCT_EXTERN_METHOD(initializeIOS:(NSString *)clientId baseUrl:(NSString*)baseUrl withResolver:(RCTPromiseResolveBlock)resolve withRejecter:(RCTPromiseRejectBlock)reject)
-RCT_EXTERN_METHOD(setUserId:(NSString *)userId withResolver:(RCTPromiseResolveBlock)resolve
+RCT_EXTERN_METHOD(initializeIOS:(NSString *)clientId baseUrl:(NSString*)baseUrl configuration:(NSDictionary*)configuration userId:(NSString*)userId withResolver:(RCTPromiseResolveBlock)resolve withRejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(setAuthenticatedUser:(NSString *)userId options:(NSDictionary*)options withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject)
-RCT_EXTERN_METHOD(triggerAction:(NSString *)action options:(NSDictionary*)options withResolver:(RCTPromiseResolveBlock)resolve
+RCT_EXTERN_METHOD(triggerAction:(NSString *)action options:(NSDictionary*)options locationConfig:(NSDictionary*)locationConfig customAttributes:(NSDictionary*)customAttributes withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject)
 RCT_EXTERN_METHOD(clearUser:(RCTPromiseResolveBlock)resolve withRejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(getSessionToken:(RCTPromiseResolveBlock)resolve withRejecter:(RCTPromiseRejectBlock)reject)
 RCT_EXTERN_METHOD(setLogLevel:(BOOL)logIsEnabled withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(logPageLoad:(NSString *)pageName withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject)
 + (BOOL)requiresMainQueueSetup
 {

@@ -1,5 +1,6 @@
 import React, { type ReactElement } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, StatusBar } from 'react-native';
+import { logPageLoad } from 'react-native-ts-accountprotection';
 import config from '../config';
 
 interface LoginProps { 
@@ -19,6 +20,10 @@ export default class Login extends React.Component<LoginProps, LoginState> {
             username: config.demoUserId,
             password: config.demoUserPassword,
         };
+    }
+
+    componentDidMount() {
+        logPageLoad('LoginScreen');
     }
 
     render() {
@@ -98,6 +103,7 @@ export default class Login extends React.Component<LoginProps, LoginState> {
     private renderLoginButton(): ReactElement {
         return (
             <TouchableOpacity
+                testID='login-button'
                 style={styles.loginButton}
                 onPress={() => this.props.onLogin(this.state.username, this.state.password)}
                 activeOpacity={0.8}

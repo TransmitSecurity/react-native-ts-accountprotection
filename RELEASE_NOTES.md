@@ -1,5 +1,8 @@
 # Release Notes
 
+## Version 3.0.2
+- Upgraded iOS native SDK to 3.0.2 which fixes a rare crash that could occur while some app resources were being released from memory.
+
 ## Version 3.0.0
 
 ### 🚀 Major Release - Native SDK Updates & API Enhancements

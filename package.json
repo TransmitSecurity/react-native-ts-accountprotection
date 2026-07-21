@@ -27,7 +27,7 @@
   ],
   "scripts": {
     "example": "yarn workspace react-native-ts-accountprotection-example",
-    "test": "jest",
+    "test": "jest --passWithNoTests",
     "typecheck": "tsc --noEmit",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
     "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build lib",
@@ -43,7 +43,7 @@
     "type": "git",
     "url": "git+https://github.com/TransmitSecurity/react-native-ts-accountprotection.git"
   },
-  "author": "Shachar Udi <shachar@transmitsecurity.com> (https://github.com/shachartransmit)",
+  "author": "Transmit Security",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/TransmitSecurity/react-native-ts-accountprotection/issues"

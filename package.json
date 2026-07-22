@@ -1,18 +1,25 @@
 {
   "name": "react-native-ts-accountprotection",
-  "version": "3.0.2",
+  "version": "4.0.0",
   "description": "Wrapper for the Transmit Security Account Protection SDK",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
   "types": "lib/typescript/src/index.d.ts",
   "react-native": "src/index",
   "source": "src/index",
+  "codegenConfig": {
+    "name": "RNTsAccountprotectionSpec",
+    "type": "modules",
+    "jsSrcsDir": "src",
+    "android": {
+      "javaPackageName": "com.tsaccountprotection"
+    }
+  },
   "files": [
     "src",
     "lib",
     "android",
     "ios",
-    "cpp",
     "*.podspec",
     "!ios/build",
     "!android/build",

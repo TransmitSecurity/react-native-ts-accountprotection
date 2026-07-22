@@ -1,21 +1,4 @@
-import { NativeModules, Platform } from 'react-native';
-
-const LINKING_ERROR =
-  `The package 'react-native-ts-accountprotection' doesn't seem to be linked. Make sure: \n\n` +
-  Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
-  '- You rebuilt the app after installing the package\n' +
-  '- You are not using Expo Go\n';
-
-const TsAccountprotection = NativeModules.TsAccountprotection
-  ? NativeModules.TsAccountprotection
-  : new Proxy(
-      {},
-      {
-        get() {
-          throw new Error(LINKING_ERROR);
-        },
-      }
-    );
+import TsAccountprotection from './NativeTsAccountprotection';
 
 // Type definitions
 export interface TSPayer {
@@ -95,21 +78,46 @@ export interface TSAuthenticatedUserOptions {
   [key: string]: any;
 }
 
-// SDK Functions - Direct exports of the native module methods
+// SDK Functions — public API is unchanged. These wrap the Turbo Module spec and
+// normalize `undefined -> null` because the codegen spec models optional
+// arguments as required-nullable.
 export function initializeSDKIOS(): Promise<boolean> {
   return TsAccountprotection.initializeSDKIOS();
 }
 
-export function initializeIOS(clientId: string, baseUrl: string, configuration?: TSInitSDKConfiguration | null, userId?: string | null): Promise<boolean> {
-  return TsAccountprotection.initializeIOS(clientId, baseUrl, configuration, userId);
+export function initializeIOS(
+  clientId: string,
+  baseUrl: string,
+  configuration?: TSInitSDKConfiguration | null,
+  userId?: string | null
+): Promise<boolean> {
+  return TsAccountprotection.initializeIOS(
+    clientId,
+    baseUrl,
+    configuration ?? null,
+    userId ?? null
+  );
 }
 
-export function setAuthenticatedUser(userId: string, options?: TSAuthenticatedUserOptions): Promise<boolean> {
-  return TsAccountprotection.setAuthenticatedUser(userId, options);
+export function setAuthenticatedUser(
+  userId: string,
+  options?: TSAuthenticatedUserOptions
+): Promise<boolean> {
+  return TsAccountprotection.setAuthenticatedUser(userId, options ?? null);
 }
 
-export function triggerAction(action: string, options?: TSActionEventOptions, locationConfig?: TSLocationConfig, customAttributes?: {[key: string]: any}): Promise<TSSetActionResponse> {
-  return TsAccountprotection.triggerAction(action, options, locationConfig, customAttributes);
+export function triggerAction(
+  action: string,
+  options?: TSActionEventOptions,
+  locationConfig?: TSLocationConfig,
+  customAttributes?: { [key: string]: any }
+): Promise<TSSetActionResponse> {
+  return TsAccountprotection.triggerAction(
+    action,
+    options ?? null,
+    locationConfig ?? null,
+    customAttributes ?? null
+  ) as unknown as Promise<TSSetActionResponse>;
 }
 
 export function clearUser(): Promise<boolean> {

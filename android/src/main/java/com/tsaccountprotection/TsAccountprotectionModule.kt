@@ -3,8 +3,6 @@ package com.tsaccountprotection
 import android.util.Log
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
-import com.facebook.react.bridge.ReactContextBaseJavaModule
-import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.ReadableType
 import com.facebook.react.bridge.WritableMap
@@ -23,7 +21,7 @@ import com.transmit.accountprotection.collection.datamanagement.location.TSLocat
 import com.transmit.accountprotection.TSClaimedUserIdType
 
 class TsAccountprotectionModule(private val reactContext: ReactApplicationContext) :
-  ReactContextBaseJavaModule(reactContext) {
+  NativeTsAccountprotectionSpec(reactContext) {
 
   companion object {
     const val NAME = "TsAccountprotection"
@@ -35,20 +33,17 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
 
   // region Account Protection SDK API
 
-  @ReactMethod
-  fun initializeSDKIOS(promise: Promise) {
+  override fun initializeSDKIOS(promise: Promise) {
     Log.d("TS", "Do nothing Android TSAccountProtectionSDK is initialized from application onCreate")
     promise.resolve(false)
   }
 
-  @ReactMethod
-  fun initializeIOS(clientId: String, baseUrl: String, configuration: ReadableMap?, userId: String?, promise: Promise) {
+  override fun initializeIOS(clientId: String, baseUrl: String, configuration: ReadableMap?, userId: String?, promise: Promise) {
     Log.d("TS", "Do nothing Android TSAccountProtectionSDK is initialized from application onCreate")
     promise.resolve(false)
   }
 
-  @ReactMethod
-  fun setAuthenticatedUser(userId: String, options: ReadableMap?, promise: Promise) {
+  override fun setAuthenticatedUser(userId: String, options: ReadableMap?, promise: Promise) {
     if(reactContext.currentActivity != null) {
       val optionsMap = convertCustomAttributes(options)
       TSAccountProtection.setAuthenticatedUser(userId, optionsMap)
@@ -58,8 +53,7 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
     }
   }
 
-  @ReactMethod
-  fun clearUser(promise: Promise) {
+  override fun clearUser(promise: Promise) {
     if(reactContext.currentActivity != null) {
       Log.d("TS", ">>> clearUser")
       TSAccountProtection.clearUser()
@@ -69,8 +63,7 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
     }
   }
 
-  @ReactMethod
-  fun getSessionToken(promise: Promise) {
+  override fun getSessionToken(promise: Promise) {
     if(reactContext.currentActivity != null) {
       TSAccountProtection.getSessionToken(object : ISessionTokenCallback {
 
@@ -87,8 +80,7 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
     }
   }
 
-  @ReactMethod
-  fun triggerAction(action: String, options: ReadableMap?, locationConfig: ReadableMap?, customAttributes: ReadableMap?, promise: Promise) {
+  override fun triggerAction(action: String, options: ReadableMap?, locationConfig: ReadableMap?, customAttributes: ReadableMap?, promise: Promise) {
     if(reactContext.currentActivity != null) {
       Log.d("TS", ">>> triggerAction $action")
 
@@ -123,8 +115,7 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
     }
   }
 
-  @ReactMethod
-  fun setLogLevel(logIsEnabled: Boolean, promise: Promise) {
+  override fun setLogLevel(logIsEnabled: Boolean, promise: Promise) {
     if(reactContext.currentActivity != null) {
       Log.d("TS", ">>> setLogLevel logIsEnabled=$logIsEnabled")
       TSAccountProtection.setLoggingEnabled(logIsEnabled);
@@ -134,8 +125,7 @@ class TsAccountprotectionModule(private val reactContext: ReactApplicationContex
     }
   }
 
-  @ReactMethod
-  fun logPageLoad(pageName: String, promise: Promise) {
+  override fun logPageLoad(pageName: String, promise: Promise) {
     if(reactContext.currentActivity != null) {
       Log.d("TS", ">>> logPageLoad pageName=$pageName")
       TSAccountProtection.logPageLoad(pageName)

@@ -1,5 +1,10 @@
 # Release Notes
 
+## Version 3.0.3
+- Updated native SDKs to the latest versions:
+  - **Android**: AccountProtection SDK upgraded from `3.0.0` to `3.0.5`
+  - **iOS**: AccountProtection SDK upgraded from `3.0.2` to `3.0.4`
+
 ## Version 3.0.2
 - Upgraded iOS native SDK to 3.0.2 which fixes a rare crash that could occur while some app resources were being released from memory.
 

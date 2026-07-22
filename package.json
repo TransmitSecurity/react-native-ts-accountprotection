@@ -1,6 +1,6 @@
 {
   "name": "react-native-ts-accountprotection",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "description": "Wrapper for the Transmit Security Account Protection SDK",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",

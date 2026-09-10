@@ -3,7 +3,7 @@
 ## Version 3.0.5
 - Updated native SDKs to the latest versions:
   - **Android**: AccountProtection SDK upgraded from `3.0.5` to `3.0.7`
-  - **iOS**: AccountProtection SDK upgraded from `3.0.4` to `3.0.6`
+  - **iOS**: AccountProtection SDK upgraded from `3.0.4` to `3.0.6` which includes core fixes to address intermittent testID visibility issues in specific React Native scenarios.
 
 ## Version 3.0.3
 - Updated native SDKs to the latest versions:
